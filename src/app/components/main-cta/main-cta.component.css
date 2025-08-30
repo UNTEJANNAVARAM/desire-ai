@@ -2,34 +2,38 @@
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  padding-top: 28px;
-  font-family: inherit;
+  padding: 15px 30px;
+  background: #fff9f1;
+  position: fixed;
+  bottom: 0;
+  left: 240px; /* width of nav */
+  right: 0;
+  z-index: 1000;
 }
 
 button {
+  padding: 10px 36px;
+  border-radius: 6px;
   border: none;
-  padding: 9px 36px;
-  border-radius: 8px;
   font-weight: 600;
   font-size: 16px;
   cursor: pointer;
-  outline: none;
-  transition: background 0.2s;
+  transition: background-color 0.3s ease;
 }
 
-.orange {
-  background: #ff6a1b;
+button.orange {
+  background-color: #d76a22;
   color: #fff;
 }
 
-.grey {
-  background: #ececec;
-  color: #aaa;
+button.grey {
+  background-color: #ccc;
+  color: #888;
   cursor: not-allowed;
 }
 
-.back {
-  background: #fff3e0;
-  color: #ff6a1b;
-  border: 1px solid #ffd3b6;
+button.back {
+  background-color: #fff;
+  border: 1px solid #d76a22;
+  color: #d76a22;
 }

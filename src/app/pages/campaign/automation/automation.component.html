@@ -1,0 +1,14 @@
+<mat-card>
+  <h2>Automation Settings</h2>
+  <mat-button-toggle-group
+    name="automationToggle"
+    aria-label="Automation toggle"
+    [value]="automationOn ? 'on' : 'off'"
+    (change)="toggleAutomation($event.value)"
+  >
+    <mat-button-toggle value="off">Off</mat-button-toggle>
+    <mat-button-toggle value="on">On</mat-button-toggle>
+  </mat-button-toggle-group>
+
+  <button mat-raised-button color="primary" (click)="save()">Save</button>
+</mat-card>

@@ -1,0 +1,9 @@
+mat-card {
+  padding: 20px;
+  max-width: 600px;
+  margin: 10px auto;
+}
+
+h2 {
+  margin-bottom: 16px;
+}

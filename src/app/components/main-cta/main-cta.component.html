@@ -1,18 +1,12 @@
-<div class="cta-bar" role="group" aria-label="Campaign navigation buttons">
+<div class="cta-bar">
+  <button *ngIf="step > 1" class="back" (click)="backClicked.emit()">Back</button>
   <button
-    *ngIf="step === 2"
-    class="back"
-    type="button"
-    (click)="backClicked.emit()"
-  >
-    ← Back
-  </button>
-  <button
-    [ngClass]="{ orange: canProceed, grey: !canProceed }"
+    class="next"
+    [class.orange]="canProceed"
+    [class.grey]="!canProceed"
     [disabled]="!canProceed"
-    type="button"
     (click)="nextClicked.emit()"
   >
-    Next →
+    {{ step === 3 ? 'Finish' : 'Next' }}
   </button>
 </div>

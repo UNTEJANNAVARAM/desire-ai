@@ -2,11 +2,13 @@
   width: 100%;
   margin-bottom: 24px;
 }
+
 .theme-list {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
+
 .theme-card {
   background: #fff;
   border-radius: 8px;
@@ -17,6 +19,7 @@
   user-select: none;
   transition: background-color 0.18s, border-color 0.18s, color 0.18s;
 }
+
 .theme-card.selected {
   background-color: #ffe4d1;
   border-color: #ffa41b;

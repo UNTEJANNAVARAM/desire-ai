@@ -1,0 +1,7 @@
+<mat-card>
+  <h2>Select Assets</h2>
+  <div *ngFor="let assetCtrl of assets; let i = index">
+    <mat-checkbox [formControl]="assetCtrl">{{ assetsList[i] }}</mat-checkbox>
+  </div>
+  <button mat-raised-button color="primary" (click)="onNext()">Next</button>
+</mat-card>
