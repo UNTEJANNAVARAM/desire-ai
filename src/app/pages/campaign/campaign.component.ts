@@ -1,119 +1,259 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 
+import { CampaignService } from '../../services/campaign.service';
+
 import { CampaignDetailsComponent } from './campaign-details/campaign-details.component';
+
 import { SelectThemeComponent } from './select-theme/select-theme.component';
+
 import { SelectAssetsComponent } from './select-assets/select-assets.component';
+
 import { AutomationComponent } from './automation/automation.component';
+
 import { AssetDetailsComponent } from './asset-details/asset-details.component';
+
 import { DataSourceComponent } from './data-source/data-source.component';
 
 @Component({
-  selector: 'app-campaign',
-  templateUrl: './campaign.component.html',
-  styleUrls: ['./campaign.component.css'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    CampaignDetailsComponent,
-    SelectThemeComponent,
-    SelectAssetsComponent,
-    AutomationComponent,
-    AssetDetailsComponent,
-    DataSourceComponent,
-  ],
-})
-export class CampaignComponent {
-  // Step tracking for each part
-  part1Step: 1 | 2 = 1; // Campaign Details (1), Select Theme (2)
-  part2Step: 1 | 2 = 1; // Select Assets (1), Automation (2)
-  part3Step: 1 | 2 = 1; // Asset Details (1), Data Source (2)
 
-  // Validation flags per part
-  isCampaignValid = false;
-  isThemeSelected = false;
-  isAssetsSelected = false;
-  isAutomationDone = false;
-  isAssetValid = false;
-  isDataSourceValid = false;
+  selector: 'app-campaign',
+
+  templateUrl: './campaign.component.html',
+
+  styleUrls: ['./campaign.component.css'],
+
+  standalone: true,
+
+  imports: [
+
+    CommonModule,
+
+    CampaignDetailsComponent,
+
+    SelectThemeComponent,
+
+    SelectAssetsComponent,
+
+    AutomationComponent,
+
+    AssetDetailsComponent,
+
+    DataSourceComponent
+
+  ],
+
+})
+
+export class CampaignComponent implements OnInit {
+
+  stepIndex = 0;
+
+  verticals = [];
+
+  templates = [];
+
+  assets = [];
+
+  selectedVerticalId?: string;
+
+  selectedTemplateId?: string;
+
+  selectedAssetIds: string[] = [];
 
   currentAsset: any = null;
 
-  // PART 1 handlers
-  onCampaignValidity(valid: boolean) {
-    this.isCampaignValid = valid;
+  campaignDetails = {
+
+    campaignname: '',
+
+    description: '',
+
+    fromdate: '',
+
+    todate: ''
+
+  };
+
+  isValid = Array(6).fill(false);
+
+  part1Open = true;
+
+  constructor(private campaignService: CampaignService) {}
+
+  ngOnInit() {
+
+    this.loadVerticals();
+
   }
 
-  onThemeSelected(selected: boolean) {
-    this.isThemeSelected = selected;
+  loadVerticals() {
+
+    this.campaignService.getVerticals().subscribe(data => this.verticals = data);
+
   }
 
-  nextPart1() {
-    if (this.isCampaignValid) {
-      this.part1Step = 2;
-    }
+  onCampaignDetailsValidity(valid: boolean) {
+
+    this.isValid[0] = valid;
+
   }
 
-  backPart1() {
-    if (this.part1Step === 2) {
-      this.part1Step = 1;
-    }
+  onVerticalSelected(id: string) {
+
+    this.selectedVerticalId = id;
+
+    this.loadTemplates(id);
+
   }
 
-  // PART 2 handlers
-  onAssetsSelected(selected: boolean) {
-    this.isAssetsSelected = selected;
+  loadTemplates(verticalId: string) {
+
+    this.campaignService.getTemplates(verticalId).subscribe(data => { 
+
+      this.templates = data;
+
+      this.selectedTemplateId = undefined;
+
+      this.isValid[1] = false;
+
+    });
+
   }
 
- onAutomationToggle(enabled: boolean) {
-  if (enabled) {
-    this.part2Step = 2;
-  } else {
-    this.part2Step = 1;
-  }
-  this.isAutomationDone = false; // reset state
-}
+  onTemplateSelected(id: string) {
 
+    this.selectedTemplateId = id;
+
+    this.loadAssets(id);
+
+    this.isValid[1] = !!id;
+
+  }
+
+  loadAssets(templateId: string) {
+
+    this.campaignService.getAssets(templateId).subscribe(data => {
+
+      this.assets = data;
+
+      this.selectedAssetIds = [];
+
+      this.isValid[2] = false;
+
+    });
+
+  }
+
+  onAssetsSelected(ids: string[]) {
+
+    this.selectedAssetIds = ids;
+
+    this.isValid[2] = ids.length > 0;
+
+  }
+
+  onAutomationToggle(enabled: boolean) {
+
+    this.stepIndex = enabled ? 3 : 4;
+
+    this.isValid[3] = enabled ? false : true;
+
+  }
 
   onAutomationDone(done: boolean) {
-    this.isAutomationDone = done;
-  }
 
-  nextPart2() {
-    if (this.isAssetsSelected) {
-      this.part2Step = 2;
-    }
-  }
+    this.isValid[3] = done;
 
-  backPart2() {
-    if (this.part2Step === 2) {
-      this.part2Step = 1;
-    }
   }
 
   onSelectAsset(asset: any) {
+
     this.currentAsset = asset;
-    this.part3Step = 1; // Open asset details in part 3
+
+    this.stepIndex = 4;
+
   }
 
-  // PART 3 handlers
   onAssetValidity(valid: boolean) {
-    this.isAssetValid = valid;
+
+    this.isValid[4] = valid;
+
   }
 
   onDataSourceValidity(valid: boolean) {
-    this.isDataSourceValid = valid;
+
+    this.isValid[5] = valid;
+
   }
 
-  nextPart3() {
-    if (this.isAssetValid) {
-      this.part3Step = 2;
-    }
+  canGoBack(): boolean {
+
+    return this.stepIndex > 0;
+
   }
 
-  backPart3() {
-    if (this.part3Step === 2) {
-      this.part3Step = 1;
-    }
+  canGoNext(): boolean {
+
+    return this.isValid[this.stepIndex];
+
   }
+
+  back() {
+
+    if (this.canGoBack()) {
+
+      if (this.stepIndex === 4 && this.currentAsset && this.selectedAssetIds.length > 0) {
+
+        this.stepIndex = 2; // back to select-assets if editing assets
+
+      } else {
+
+        this.stepIndex--;
+
+      }
+
+    }
+
+  }
+
+  next() {
+
+    if (this.canGoNext()) {
+
+      if (this.stepIndex === 2) {
+
+        // On next from Select Assets, check automation toggle state, decide step
+
+        if (this.isValid[3] === false) {
+
+          this.stepIndex = 3; // Automation
+
+        } else {
+
+          this.stepIndex = 4; // Asset Details directly
+
+        }
+
+      } else if (this.stepIndex === 4 && this.isValid[4]) {
+
+        this.stepIndex = 5; // Data Source
+
+      } else {
+
+        this.stepIndex++;
+
+      }
+
+    }
+
+  }
+
+  togglePart1() {
+
+    this.part1Open = !this.part1Open;
+
+  }
+
 }
