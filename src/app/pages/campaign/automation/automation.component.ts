@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatButtonModule } from '@angular/material/button';
-
+import { Input } from '@angular/core';
 @Component({
   selector: 'app-automation',
   templateUrl: './automation.component.html',
@@ -21,7 +21,7 @@ import { MatButtonModule } from '@angular/material/button';
 export class AutomationComponent {
   @Output() automationToggle = new EventEmitter<boolean>();
   @Output() automationDone = new EventEmitter<void>();
-
+  @Input() automatedAssets: { parentId: string; childCount: number }[] = [];
   automationOn = false;
 
   toggleAutomation(value: string) {

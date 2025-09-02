@@ -5,6 +5,8 @@ import { CampaignDetailsComponent } from './campaign-details/campaign-details.co
 import { SelectThemeComponent } from './select-theme/select-theme.component';
 import { SelectAssetsComponent } from './select-assets/select-assets.component';
 import { AutomationComponent } from './automation/automation.component';
+import { AssetDetailsComponent } from './asset-details/asset-details.component';
+import { DataSourceComponent } from './data-source/data-source.component';
 import { MainCtaComponent } from '../../components/main-cta/main-cta.component';
 
 import { VerticalService } from '../../services/vertical.service';
@@ -15,7 +17,7 @@ import { Vertical } from '../../models/vertical.model';
 import { Template } from '../../models/template.model';
 import { Asset } from '../../models/asset.model';
 
-type Step = 'details' | 'theme' | 'assets' | 'automation';
+type Step = 'details' | 'theme' | 'assets' | 'automation' | 'asset-details' | 'data-source';
 
 @Component({
   selector: 'app-campaign',
@@ -28,6 +30,8 @@ type Step = 'details' | 'theme' | 'assets' | 'automation';
     SelectThemeComponent,
     SelectAssetsComponent,
     AutomationComponent,
+    AssetDetailsComponent,
+    DataSourceComponent,
     MainCtaComponent,
   ],
 })
@@ -40,23 +44,29 @@ export class CampaignComponent {
 
   selectedVertical = '';
   selectedTemplate = '';
-  selectedAssetIds: string[] = [];
+  selectedAssetsIds: string[] = [];
   automatedAssets: { parentId: string; childCount: number }[] = [];
+
+  selectedAssetForDetails: Asset | null = null;
 
   isDetailsValid = false;
   isThemeValid = false;
   isAssetsValid = false;
   isAutomationValid = false;
+  isAssetDetailsValid = false;
+  isDataSourceValid = false;
+
   bulkEditMode = false;
 
   constructor(
     private verticalService: VerticalService,
     private templateService: TemplateService,
-    private assetService: AssetService
+    private assetService: AssetService,
   ) {}
 
   ngOnInit() {
-    this.verticalService.getVerticals().subscribe(data => (this.verticals = data));
+    this.verticalService.getVerticals()
+      .subscribe((data: Vertical[]) => (this.verticals = data));
   }
 
   onDetailsValidity(valid: boolean) {
@@ -69,13 +79,17 @@ export class CampaignComponent {
     this.isThemeValid = false;
     this.templates = [];
     this.assets = [];
-    this.selectedAssetIds = [];
+    this.selectedAssetsIds = [];
     this.automatedAssets = [];
     this.isAssetsValid = false;
     this.isAutomationValid = false;
+    this.isAssetDetailsValid = false;
+    this.isDataSourceValid = false;
+    this.selectedAssetForDetails = null;
 
     if (verticalId) {
-      this.templateService.getTemplates(verticalId).subscribe(data => (this.templates = data));
+      this.templateService.getTemplates(verticalId)
+        .subscribe((data: Template[]) => (this.templates = data));
     }
   }
 
@@ -85,36 +99,41 @@ export class CampaignComponent {
   }
 
   onAssetsSelected(selectedIds: string[]) {
-    this.selectedAssetIds = selectedIds;
+    this.selectedAssetsIds = selectedIds;
     this.isAssetsValid = selectedIds.length > 0;
   }
 
-  toggleAutomate(parentId: string, selected: boolean) {
-    if (selected) {
-      if (!this.automatedAssets.some(a => a.parentId === parentId)) {
-        this.automatedAssets.push({ parentId, childCount: 0 });
-      }
-    } else {
-      this.automatedAssets = this.automatedAssets.filter(a => a.parentId !== parentId);
-    }
+  get automatedParentIds(): string[] {
+    return this.automatedAssets.map(a => a.parentId);
+  }
+
+  toggleAutomate(parentIds: string[]) {
+    this.automatedAssets = parentIds.map(id => {
+      const existing = this.automatedAssets.find(a => a.parentId === id);
+      return existing ?? { parentId: id, childCount: 0 };
+    });
     this.updateAutomationValidity();
   }
 
-  increaseChildCount(parentId: string) {
-    const asset = this.automatedAssets.find(a => a.parentId === parentId);
-    if (asset && asset.childCount < 5) {
-      asset.childCount++;
-      this.updateAutomationValidity();
-    }
+ increaseChildCount(event: any) {
+  const id = event as string;
+  const asset = this.automatedAssets.find(a => a.parentId === id);
+  if (asset && asset.childCount < 5) {
+    asset.childCount++;
+    this.updateAutomationValidity();
   }
+}
 
-  decreaseChildCount(parentId: string) {
-    const asset = this.automatedAssets.find(a => a.parentId === parentId);
-    if (asset && asset.childCount > 0) {
-      asset.childCount--;
-      this.updateAutomationValidity();
-    }
+decreaseChildCount(event: any) {
+  const id = event as string;
+  const asset = this.automatedAssets.find(a => a.parentId === id);
+  if (asset && asset.childCount > 0) {
+    asset.childCount--;
+    this.updateAutomationValidity();
   }
+}
+
+
 
   updateAutomation() {
     this.updateAutomationValidity();
@@ -124,61 +143,104 @@ export class CampaignComponent {
     this.isAutomationValid = this.automatedAssets.some(a => a.childCount > 0);
   }
 
+  onAssetSelected(asset: Asset) {
+    this.selectedAssetForDetails = asset;
+  }
+
+  onAssetDetailsValidity(valid: boolean) {
+    this.isAssetDetailsValid = valid;
+  }
+
+  onDataSourceValidity(valid: boolean) {
+    this.isDataSourceValid = valid;
+  }
+
   canGoBack(): boolean {
     return this.step !== 'details';
   }
 
   canGoNext(): boolean {
-    if (this.step === 'details') return this.isDetailsValid;
-    if (this.step === 'theme') return this.isThemeValid;
-    if (this.step === 'assets') return this.isAssetsValid;
-    if (this.step === 'automation') return this.isAutomationValid;
-    return false;
+    switch (this.step) {
+      case 'details': return this.isDetailsValid;
+      case 'theme': return this.isThemeValid;
+      case 'assets': return this.isAssetsValid;
+      case 'automation': return this.isAutomationValid;
+      case 'asset-details': return this.isAssetDetailsValid;
+      case 'data-source': return this.isDataSourceValid;
+      default: return false;
+    }
   }
 
   onNext() {
     if (!this.canGoNext()) return;
-
-    if (this.step === 'details') {
-      this.step = 'theme';
-    } else if (this.step === 'theme') {
-      this.step = 'assets';
-      this.loadAssets();
-    } else if (this.step === 'assets') {
-      this.step = 'automation';
+    switch (this.step) {
+      case 'details':
+        this.step = 'theme';
+        break;
+      case 'theme':
+        this.step = 'assets';
+        this.loadAssets();
+        break;
+      case 'assets':
+        this.step = 'automation';
+        break;
+      case 'automation':
+        if (this.selectedAssetForDetails) this.step = 'asset-details';
+        break;
+      case 'asset-details':
+        this.step = 'data-source';
+        break;
     }
   }
 
   onBack() {
-    if (this.step === 'theme') {
-      this.step = 'details';
-    } else if (this.step === 'assets') {
-      this.step = 'theme';
-    } else if (this.step === 'automation') {
-      this.step = 'assets';
+    switch (this.step) {
+      case 'theme':
+        this.step = 'details';
+        break;
+      case 'assets':
+        this.step = 'theme';
+        break;
+      case 'automation':
+        this.step = 'assets';
+        break;
+      case 'asset-details':
+        this.step = 'automation';
+        break;
+      case 'data-source':
+        this.step = 'asset-details';
+        break;
     }
   }
 
   loadAssets() {
     if (!this.selectedTemplate) {
       this.assets = [];
-      return;
-    }
-    this.assetService.getAssets(this.selectedTemplate).subscribe(data => {
-      this.assets = data;
-      this.selectedAssetIds = [];
+      this.selectedAssetsIds = [];
       this.automatedAssets = [];
       this.isAssetsValid = false;
       this.isAutomationValid = false;
-    });
+      this.selectedAssetForDetails = null;
+      return;
+    }
+    this.assetService.getAssets(this.selectedTemplate)
+      .subscribe((data: Asset[]) => {
+        this.assets = data;
+        this.selectedAssetsIds = [];
+        this.automatedAssets = [];
+        this.isAssetsValid = false;
+        this.isAutomationValid = false;
+        this.selectedAssetForDetails = null;
+      });
   }
 
-  onEditAsset(asset: Asset): void {
-    console.log('Edit asset:', asset);
+  onEditAsset(asset: Asset) {
+    this.selectedAssetForDetails = asset;
+    this.step = 'asset-details';
   }
 
-  getAssetNameById(assetId: string): string {
-    const found = this.assets.find(a => a.assetId === assetId);
+  getAssetName(id: string): string {
+    const found = this.assets.find(a => a.assetId === id);
     return found ? found.assetname : '';
   }
 }
