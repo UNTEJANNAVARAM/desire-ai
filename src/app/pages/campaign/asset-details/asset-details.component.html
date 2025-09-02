@@ -1,18 +1,9 @@
-<mat-card>
-  <h2>Asset Details</h2>
-  <form [formGroup]="assetForm">
-    <mat-form-field appearance="outline" style="width: 100%;">
-      <mat-label>Asset Name</mat-label>
-      <input matInput formControlName="assetName" />
-    </mat-form-field>
+<form [formGroup]="assetForm" class="asset-edit-form">
+  <label>Asset Name</label>
+  <input formControlName="assetname" />
 
-    <mat-form-field appearance="outline" style="width: 100%; margin-top: 16px;">
-      <mat-label>Asset Description</mat-label>
-      <textarea matInput formControlName="assetDescription" rows="3"></textarea>
-    </mat-form-field>
+  <label>Description</label>
+  <textarea formControlName="description"></textarea>
 
-    <button mat-raised-button color="primary" type="button" (click)="onSave()" style="margin-top: 16px;">
-      Save
-    </button>
-  </form>
-</mat-card>
+  <button (click)="save()">Save</button>
+</form>

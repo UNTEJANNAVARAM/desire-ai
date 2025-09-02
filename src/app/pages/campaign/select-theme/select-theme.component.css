@@ -1,4 +1,4 @@
-.theme-select-field {
+.theme-select {
   width: 100%;
   margin-bottom: 24px;
 }
@@ -6,23 +6,31 @@
 .theme-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
+  max-height: 300px;
+  overflow-y: auto;
+  border-top: 1px solid #f0e6d2;
+  padding-top: 12px;
 }
 
 .theme-card {
-  background: #fff;
+  padding: 12px 18px;
   border-radius: 8px;
-  border: 1.5px solid #e3e3e3;
-  padding: 18px 18px;
-  font-size: 15px;
+  border: 1.5px solid #e1e1e1;
   cursor: pointer;
   user-select: none;
-  transition: background-color 0.18s, border-color 0.18s, color 0.18s;
+  font-size: 15px;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.theme-card:hover {
+  background-color: #fff3e0;
+  border-color: #f7a41b;
 }
 
 .theme-card.selected {
-  background-color: #ffe4d1;
-  border-color: #ffa41b;
-  color: #d76e3a;
+  background-color: #ffefcb;
+  border-color: #f7a41b;
   font-weight: 600;
+  color: #be6a0a;
 }

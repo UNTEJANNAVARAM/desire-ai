@@ -1,60 +1,102 @@
-import { Component,EventEmitter, Output  } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormControl, FormArray, FormGroup } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { FormsModule } from '@angular/forms';
+import { Asset } from '../../../models/asset.model';
+
+interface AssetBox {
+  asset: Asset;
+  automate: boolean;
+  childrenCount: number;
+  selected: boolean;
+}
 
 @Component({
   selector: 'app-select-assets',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatCardModule, MatCheckboxModule],
   templateUrl: './select-assets.component.html',
-  styleUrls: ['./select-assets.component.css']
+  styleUrls: ['./select-assets.component.css'],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
 })
-export class SelectAssetsComponent {
-   @Output() selectionChange = new EventEmitter<boolean>();
-  assetsForm = new FormGroup({
-    assets: new FormArray([
-      new FormControl(false), // asset 1 selected
-      new FormControl(false), // asset 2 selected
-      new FormControl(false)  // asset 3 selected
-    ])
-  });
+export class SelectAssetsComponent implements OnInit {
+  @Input() assets: Asset[] = [];
+  @Input() selectedAssetIds: string[] = [];
+  @Output() selectionChange = new EventEmitter<string[]>();
+  @Output() editAsset = new EventEmitter<Asset>();
+  @Output() automateStarted = new EventEmitter<{ parentIds: string[]; childCounts: Record<string, number> }>();
 
-  assetsList = ['Asset 1', 'Asset 2', 'Asset 3'];
+  assetBoxes: AssetBox[] = [];
 
-  // Get the FormArray instance for accessing value and controls
-  get assetsFormArray(): FormArray {
-    return this.assetsForm.get('assets') as FormArray;
+  ngOnInit() {
+    this.assetBoxes = this.assets.map(asset => ({
+      asset,
+      automate: false,
+      childrenCount: 0,
+      selected: this.selectedAssetIds.includes(asset.assetId),
+    }));
   }
 
-  // Get the controls casted as FormControl[] for template binding
-  get assets(): FormControl[] {
-    return this.assetsFormArray.controls as FormControl[];
+  toggleSelection(index: number): void {
+    const box = this.assetBoxes[index];
+    box.selected = !box.selected;
+    if (!box.selected) {
+      // If deselected, also clear automate
+      if (box.automate) {
+        this.toggleAutomate(index);
+      }
+    }
+    this.emitSelectedIds();
   }
 
-  // Toggles the boolean value of the checkbox at given index safely
-  selectAsset(index: number): void {
-    const control = this.assetsFormArray.at(index);
-    if (control) {
-      control.setValue(!control.value);
+  toggleAutomate(index: number): void {
+    const box = this.assetBoxes[index];
+    box.automate = !box.automate;
+    if (!box.automate) {
+      box.childrenCount = 0;
+    }
+    if (!box.selected) {
+      box.selected = true; // Ensure asset is selected if automation enabled
+    }
+    this.emitSelectedIds();
+    this.emitAutomation();
+  }
+
+  incrementChildren(index: number): void {
+    const box = this.assetBoxes[index];
+    if (box.childrenCount < 5) {
+      box.childrenCount++;
+      this.emitAutomation();
     }
   }
 
-  // Called on Next button click for validation and further action
-  onNext(): void {
-    if (this.assetsFormArray.value.some((selected: boolean) => selected)) {
-      alert('Next: Selected assets: ' + this.getSelectedAssets().join(', '));
-    } else {
-      alert('Please select at least one asset.');
+  decrementChildren(index: number): void {
+    const box = this.assetBoxes[index];
+    if (box.childrenCount > 0) {
+      box.childrenCount--;
+      this.emitAutomation();
     }
   }
 
-  // Returns an array of strings for the currently selected assets
-  getSelectedAssets(): string[] {
-    return this.assetsFormArray.value
-      .map((selected: boolean, index: number) => selected ? this.assetsList[index] : null)
-      .filter((v: string | null) => v !== null) as string[];
+  editAssetClick(asset: Asset): void {
+    this.editAsset.emit(asset);
+  }
+
+  emitSelectedIds(): void {
+    const selectedIds = this.assetBoxes.filter(b => b.selected).map(b => b.asset.assetId);
+    this.selectionChange.emit(selectedIds);
+  }
+
+  emitAutomation(): void {
+    const parentIds = this.assetBoxes.filter(b => b.automate).map(b => b.asset.assetId);
+    const childCounts: Record<string, number> = {};
+    this.assetBoxes.forEach(b => {
+      if (b.automate) {
+        childCounts[b.asset.assetId] = b.childrenCount;
+      }
+    });
+    this.automateStarted.emit({ parentIds, childCounts });
+  }
+
+  canProceedAutomation(): boolean {
+    return this.assetBoxes.some(b => b.automate && b.childrenCount > 0);
   }
 }

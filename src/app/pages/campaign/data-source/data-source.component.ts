@@ -3,25 +3,31 @@ import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 
+import { Asset } from '../../../models/asset.model';
+
 @Component({
   selector: 'app-data-source',
-  standalone: true,
-  imports: [CommonModule, MatTableModule, MatCardModule],
   templateUrl: './data-source.component.html',
-  styleUrls: ['./data-source.component.css']
+  styleUrls: ['./data-source.component.css'],
+  standalone: true,
+  imports: [CommonModule, MatTableModule, MatCardModule]
 })
 export class DataSourceComponent implements OnChanges {
-  @Input() asset: any;
+  @Input() asset?: Asset;
   @Output() validityChange = new EventEmitter<boolean>();
 
-  displayedColumns: string[] = ['id', 'name', 'type', 'status'];
+  displayedColumns = ['id', 'name', 'type', 'status'];
   dataSource: any[] = [];
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['asset'] && this.asset) {
-      // Load or update dataSource based on asset if needed
+      // TODO: Load related sources into dataSource using asset information
+      this.dataSource = []; // Load actual data here
+
+      // For demo, assume data is valid once asset is set
       this.validityChange.emit(true);
     } else {
+      this.dataSource = [];
       this.validityChange.emit(false);
     }
   }

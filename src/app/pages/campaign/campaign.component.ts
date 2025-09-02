@@ -1,259 +1,184 @@
-import { Component, OnInit } from '@angular/core';
-
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { CampaignService } from '../../services/campaign.service';
-
 import { CampaignDetailsComponent } from './campaign-details/campaign-details.component';
-
 import { SelectThemeComponent } from './select-theme/select-theme.component';
-
 import { SelectAssetsComponent } from './select-assets/select-assets.component';
-
 import { AutomationComponent } from './automation/automation.component';
+import { MainCtaComponent } from '../../components/main-cta/main-cta.component';
 
-import { AssetDetailsComponent } from './asset-details/asset-details.component';
+import { VerticalService } from '../../services/vertical.service';
+import { TemplateService } from '../../services/template.service';
+import { AssetService } from '../../services/asset.service';
 
-import { DataSourceComponent } from './data-source/data-source.component';
+import { Vertical } from '../../models/vertical.model';
+import { Template } from '../../models/template.model';
+import { Asset } from '../../models/asset.model';
+
+type Step = 'details' | 'theme' | 'assets' | 'automation';
 
 @Component({
-
   selector: 'app-campaign',
-
   templateUrl: './campaign.component.html',
-
   styleUrls: ['./campaign.component.css'],
-
   standalone: true,
-
   imports: [
-
     CommonModule,
-
     CampaignDetailsComponent,
-
     SelectThemeComponent,
-
     SelectAssetsComponent,
-
     AutomationComponent,
-
-    AssetDetailsComponent,
-
-    DataSourceComponent
-
+    MainCtaComponent,
   ],
-
 })
+export class CampaignComponent {
+  step: Step = 'details';
 
-export class CampaignComponent implements OnInit {
+  verticals: Vertical[] = [];
+  templates: Template[] = [];
+  assets: Asset[] = [];
 
-  stepIndex = 0;
-
-  verticals = [];
-
-  templates = [];
-
-  assets = [];
-
-  selectedVerticalId?: string;
-
-  selectedTemplateId?: string;
-
+  selectedVertical = '';
+  selectedTemplate = '';
   selectedAssetIds: string[] = [];
+  automatedAssets: { parentId: string; childCount: number }[] = [];
 
-  currentAsset: any = null;
+  isDetailsValid = false;
+  isThemeValid = false;
+  isAssetsValid = false;
+  isAutomationValid = false;
+  bulkEditMode = false;
 
-  campaignDetails = {
-
-    campaignname: '',
-
-    description: '',
-
-    fromdate: '',
-
-    todate: ''
-
-  };
-
-  isValid = Array(6).fill(false);
-
-  part1Open = true;
-
-  constructor(private campaignService: CampaignService) {}
+  constructor(
+    private verticalService: VerticalService,
+    private templateService: TemplateService,
+    private assetService: AssetService
+  ) {}
 
   ngOnInit() {
-
-    this.loadVerticals();
-
+    this.verticalService.getVerticals().subscribe(data => (this.verticals = data));
   }
 
-  loadVerticals() {
-
-    this.campaignService.getVerticals().subscribe(data => this.verticals = data);
-
+  onDetailsValidity(valid: boolean) {
+    this.isDetailsValid = valid;
   }
 
-  onCampaignDetailsValidity(valid: boolean) {
+  onVerticalSelected(verticalId: string) {
+    this.selectedVertical = verticalId;
+    this.selectedTemplate = '';
+    this.isThemeValid = false;
+    this.templates = [];
+    this.assets = [];
+    this.selectedAssetIds = [];
+    this.automatedAssets = [];
+    this.isAssetsValid = false;
+    this.isAutomationValid = false;
 
-    this.isValid[0] = valid;
-
+    if (verticalId) {
+      this.templateService.getTemplates(verticalId).subscribe(data => (this.templates = data));
+    }
   }
 
-  onVerticalSelected(id: string) {
-
-    this.selectedVerticalId = id;
-
-    this.loadTemplates(id);
-
+  onTemplateSelected(templateId: string) {
+    this.selectedTemplate = templateId;
+    this.isThemeValid = !!templateId;
   }
 
-  loadTemplates(verticalId: string) {
-
-    this.campaignService.getTemplates(verticalId).subscribe(data => { 
-
-      this.templates = data;
-
-      this.selectedTemplateId = undefined;
-
-      this.isValid[1] = false;
-
-    });
-
+  onAssetsSelected(selectedIds: string[]) {
+    this.selectedAssetIds = selectedIds;
+    this.isAssetsValid = selectedIds.length > 0;
   }
 
-  onTemplateSelected(id: string) {
-
-    this.selectedTemplateId = id;
-
-    this.loadAssets(id);
-
-    this.isValid[1] = !!id;
-
+  toggleAutomate(parentId: string, selected: boolean) {
+    if (selected) {
+      if (!this.automatedAssets.some(a => a.parentId === parentId)) {
+        this.automatedAssets.push({ parentId, childCount: 0 });
+      }
+    } else {
+      this.automatedAssets = this.automatedAssets.filter(a => a.parentId !== parentId);
+    }
+    this.updateAutomationValidity();
   }
 
-  loadAssets(templateId: string) {
-
-    this.campaignService.getAssets(templateId).subscribe(data => {
-
-      this.assets = data;
-
-      this.selectedAssetIds = [];
-
-      this.isValid[2] = false;
-
-    });
-
+  increaseChildCount(parentId: string) {
+    const asset = this.automatedAssets.find(a => a.parentId === parentId);
+    if (asset && asset.childCount < 5) {
+      asset.childCount++;
+      this.updateAutomationValidity();
+    }
   }
 
-  onAssetsSelected(ids: string[]) {
-
-    this.selectedAssetIds = ids;
-
-    this.isValid[2] = ids.length > 0;
-
+  decreaseChildCount(parentId: string) {
+    const asset = this.automatedAssets.find(a => a.parentId === parentId);
+    if (asset && asset.childCount > 0) {
+      asset.childCount--;
+      this.updateAutomationValidity();
+    }
   }
 
-  onAutomationToggle(enabled: boolean) {
-
-    this.stepIndex = enabled ? 3 : 4;
-
-    this.isValid[3] = enabled ? false : true;
-
+  updateAutomation() {
+    this.updateAutomationValidity();
   }
 
-  onAutomationDone(done: boolean) {
-
-    this.isValid[3] = done;
-
-  }
-
-  onSelectAsset(asset: any) {
-
-    this.currentAsset = asset;
-
-    this.stepIndex = 4;
-
-  }
-
-  onAssetValidity(valid: boolean) {
-
-    this.isValid[4] = valid;
-
-  }
-
-  onDataSourceValidity(valid: boolean) {
-
-    this.isValid[5] = valid;
-
+  updateAutomationValidity() {
+    this.isAutomationValid = this.automatedAssets.some(a => a.childCount > 0);
   }
 
   canGoBack(): boolean {
-
-    return this.stepIndex > 0;
-
+    return this.step !== 'details';
   }
 
   canGoNext(): boolean {
-
-    return this.isValid[this.stepIndex];
-
+    if (this.step === 'details') return this.isDetailsValid;
+    if (this.step === 'theme') return this.isThemeValid;
+    if (this.step === 'assets') return this.isAssetsValid;
+    if (this.step === 'automation') return this.isAutomationValid;
+    return false;
   }
 
-  back() {
+  onNext() {
+    if (!this.canGoNext()) return;
 
-    if (this.canGoBack()) {
-
-      if (this.stepIndex === 4 && this.currentAsset && this.selectedAssetIds.length > 0) {
-
-        this.stepIndex = 2; // back to select-assets if editing assets
-
-      } else {
-
-        this.stepIndex--;
-
-      }
-
+    if (this.step === 'details') {
+      this.step = 'theme';
+    } else if (this.step === 'theme') {
+      this.step = 'assets';
+      this.loadAssets();
+    } else if (this.step === 'assets') {
+      this.step = 'automation';
     }
-
   }
 
-  next() {
-
-    if (this.canGoNext()) {
-
-      if (this.stepIndex === 2) {
-
-        // On next from Select Assets, check automation toggle state, decide step
-
-        if (this.isValid[3] === false) {
-
-          this.stepIndex = 3; // Automation
-
-        } else {
-
-          this.stepIndex = 4; // Asset Details directly
-
-        }
-
-      } else if (this.stepIndex === 4 && this.isValid[4]) {
-
-        this.stepIndex = 5; // Data Source
-
-      } else {
-
-        this.stepIndex++;
-
-      }
-
+  onBack() {
+    if (this.step === 'theme') {
+      this.step = 'details';
+    } else if (this.step === 'assets') {
+      this.step = 'theme';
+    } else if (this.step === 'automation') {
+      this.step = 'assets';
     }
-
   }
 
-  togglePart1() {
-
-    this.part1Open = !this.part1Open;
-
+  loadAssets() {
+    if (!this.selectedTemplate) {
+      this.assets = [];
+      return;
+    }
+    this.assetService.getAssets(this.selectedTemplate).subscribe(data => {
+      this.assets = data;
+      this.selectedAssetIds = [];
+      this.automatedAssets = [];
+      this.isAssetsValid = false;
+      this.isAutomationValid = false;
+    });
   }
 
+  onEditAsset(asset: Asset): void {
+    console.log('Edit asset:', asset);
+  }
+
+  getAssetNameById(assetId: string): string {
+    const found = this.assets.find(a => a.assetId === assetId);
+    return found ? found.assetname : '';
+  }
 }

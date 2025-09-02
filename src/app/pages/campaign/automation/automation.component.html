@@ -1,14 +1,8 @@
 <mat-card>
   <h2>Automation Settings</h2>
-  <mat-button-toggle-group
-    name="automationToggle"
-    aria-label="Automation toggle"
-    [value]="automationOn ? 'on' : 'off'"
-    (change)="toggleAutomation($event.value)"
-  >
-    <mat-button-toggle value="off">Off</mat-button-toggle>
-    <mat-button-toggle value="on">On</mat-button-toggle>
+  <mat-button-toggle-group name="automation" aria-label="Automation toggle" [(ngModel)]="automationOn" (change)="toggleAutomation($event.value ? 'on' : 'off')">
+    <mat-button-toggle [value]="true">On</mat-button-toggle>
+    <mat-button-toggle [value]="false">Off</mat-button-toggle>
   </mat-button-toggle-group>
-
-  <button mat-raised-button color="primary" (click)="save()">Save</button>
+  <button mat-raised-button color="primary" (click)="save()">Update</button>
 </mat-card>

@@ -1,42 +1,40 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
+import { CommonModule } from '@angular/common';
+import { Asset } from '../../../models/asset.model';
 
 @Component({
   selector: 'app-asset-details',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatInputModule, MatButtonModule, MatCardModule],
   templateUrl: './asset-details.component.html',
-  styleUrls: ['./asset-details.component.css']
+  styleUrls: ['./asset-details.component.css'],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule]
 })
-export class AssetDetailsComponent implements OnChanges {
-  @Input() asset: any;
+export class AssetDetailsComponent implements OnInit {
+  @Input() asset!: Asset;
   @Output() validityChange = new EventEmitter<boolean>();
+  @Output() saved = new EventEmitter<Asset>();
 
-  assetForm = new FormGroup({
-    assetName: new FormControl(''),
-    assetDescription: new FormControl(''),
-  });
+  assetForm!: FormGroup;
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['asset'] && this.asset) {
-      this.assetForm.patchValue({
-        assetName: this.asset.name ?? '',
-        assetDescription: this.asset.description ?? '',
-      });
-    }
-  }
+  ngOnInit() {
+    this.assetForm = new FormGroup({
+      assetname: new FormControl(this.asset.assetname),
+      description: new FormControl(this.asset.description)
+    });
 
-  constructor() {
     this.assetForm.statusChanges.subscribe(() => {
       this.validityChange.emit(this.assetForm.valid);
     });
   }
 
-  onSave() {
-    alert('Saved Asset Details:\n' + JSON.stringify(this.assetForm.value, null, 2));
+  save() {
+    const updatedAsset: Asset = {
+      ...this.asset,
+      assetname: this.assetForm.value.assetname,
+      description: this.assetForm.value.description
+    };
+    this.saved.emit(updatedAsset);
+    alert("Asset saved!");
   }
 }

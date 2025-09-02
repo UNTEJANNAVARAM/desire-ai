@@ -1,77 +1,58 @@
-<!-- ...Tabs omitted for brevity... -->
-
-<div class="container">
-
-  <!-- Part 1 -->
-  <section class="part">
-    <div class="tab-header">
-      <span [class.active]="part1Step === 1" (click)="part1Step = 1">Campaign Details</span>
-      <span [class.active]="part1Step === 2" (click)="part1Step = 2">Select Theme</span>
-    </div>
-
-    <ng-container *ngIf="part1Step === 1">
-      <app-campaign-details (validityChange)="onCampaignValidity($event)"></app-campaign-details>
-      <button class="next-btn" [disabled]="!isCampaignValid" (click)="nextPart1()">Next</button>
-    </ng-container>
-
-    <ng-container *ngIf="part1Step === 2">
-      <app-select-theme (selected)="onThemeSelected($event)"></app-select-theme>
-      <button class="back-btn" (click)="backPart1()">Back</button>
-      <button class="next-btn" [disabled]="!isThemeSelected" (click)="part2Step = 1">Next</button>
-    </ng-container>
-  </section>
-
-<!-- Part 2: Assets / Automation -->
-<section class="part">
-  <div class="tab-header">
-    <span [class.active]="part2Step === 1" (click)="part2Step = 1">Select Assets</span>
-    <span [class.active]="part2Step === 2" (click)="part2Step = 2">Automation</span>
-  </div>
-
-  <!-- Select Assets view -->
-  <ng-container *ngIf="part2Step === 1">
-    <app-select-assets 
-      (selectionChange)="onAssetsSelected($event)"
-    
-      (assetSelected)="onSelectAsset($event)">
-    </app-select-assets>
-    <button class="next-btn" [disabled]="!isAssetsSelected" (click)="nextPart2()">Next</button>
-  </ng-container>
-
-  <!-- Automation view -->
-  <ng-container *ngIf="part2Step === 2">
-    <app-automation 
-      (automationToggle)="onAutomationToggle($event)"
-      (automationDone)="onAutomationDone($event)">
-    </app-automation>
-    <button class="back-btn" (click)="backPart2()">Back</button>
-    <button class="next-btn" [disabled]="!isAutomationDone" (click)="part3Step = 1">Next</button>
-  </ng-container>
-</section>
-
-
-  <!-- Part 3 -->
-  <section class="part">
-    <div class="tab-header">
-      <span [class.active]="part3Step === 1" (click)="part3Step = 1">Asset Details</span>
-      <span [class.active]="part3Step === 2" (click)="part3Step = 2">Data Source</span>
-    </div>
-
-    <ng-container *ngIf="part3Step === 1">
-      <app-asset-details
-        [asset]="currentAsset"
-        (validityChange)="onAssetValidity($event)">
-      </app-asset-details>
-      <button class="next-btn" [disabled]="!isAssetValid" (click)="nextPart3()">Save &amp; Next</button>
-    </ng-container>
-
-    <ng-container *ngIf="part3Step === 2">
-      <app-data-source
-        [asset]="currentAsset"
-        (validityChange)="onDataSourceValidity($event)">
-      </app-data-source>
-      <button class="back-btn" (click)="backPart3()">Back</button>
+<div class="campaign-container">
+  <!-- LEFT PANEL: Steps (details, theme) -->
+  <section class="wizard-panel panel-left">
+    <nav class="wizard-tabs">
+      <span [class.active]="step==='details'">Campaign Details</span>
+      <span [class.active]="step==='theme'">Select Theme</span>
+      <!-- Add further tabs for step 2,3 as needed -->
+    </nav>
+    <ng-container [ngSwitch]="step">
+      <div *ngSwitchCase="'details'">
+        <app-campaign-details (validityChange)="onDetailsValidity($event)"></app-campaign-details>
+        <button
+          class="next-button"
+          [disabled]="!isDetailsValid"
+          (click)="step='theme'">
+          Next
+        </button>
+      </div>
+      <div *ngSwitchCase="'theme'">
+        <app-select-theme
+          [verticals]="verticals"
+          [templates]="templates"
+          (verticalChange)="onVerticalSelected($event)"
+          (templateChange)="onTemplateSelected($event)">
+        </app-select-theme>
+       >
+       
+      </div>
+      <!-- Add asset selection and asset details as further steps if desired -->
     </ng-container>
   </section>
 
+  <!-- RIGHT PANEL: Dynamic guidance/content for each state -->
+  <section class="wizard-panel panel-right">
+    <ng-container [ngSwitch]="step">
+      <div *ngSwitchCase="'details'" class="panel-help">
+        <img src="assets/empty-illustration.svg" alt="" class="panel-help-img"/>
+        <div class="panel-help-title">Nothing to show...</div>
+        <div class="panel-help-sub">Add all the descriptions and click next below</div>
+      </div>
+      <div *ngSwitchCase="'theme'" class="panel-help">
+        <img src="assets/empty-illustration.svg" alt="" class="panel-help-img"/>
+        <div class="panel-help-title">Nothing to Show..</div>
+        <div class="panel-help-sub">
+          <span *ngIf="!selectedVertical">Select a vertical</span>
+          <span *ngIf="selectedVertical && !selectedTemplate">Select a theme from the theme catalogue.</span>
+        </div>
+      </div>
+      <!-- Add illustration for 'assets' step or asset details, automation, etc. -->
+    </ng-container>
+  </section>
 </div>
+<app-main-cta
+  [backDisabled]="!canGoBack()"
+  [nextDisabled]="!canGoNext()"
+  (back)="onBack()"
+  (next)="onNext()"
+></app-main-cta>

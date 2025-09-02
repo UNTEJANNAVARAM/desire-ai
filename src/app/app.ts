@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { LeftNavComponent } from './components/left-nav/left-nav.component';
-import { MainCtaComponent } from './components/main-cta/main-cta.component';
+
 import { RouterOutlet } from '@angular/router';
 
 // Import global styles if you have an app.css file
@@ -19,7 +19,7 @@ import './app.css';
     HeaderComponent,
     FooterComponent,
     LeftNavComponent,
-    MainCtaComponent,
+  
     RouterOutlet,
   ],
 })

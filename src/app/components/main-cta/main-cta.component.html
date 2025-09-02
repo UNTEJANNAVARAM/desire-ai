@@ -1,12 +1,17 @@
-<div class="cta-bar">
-  <button *ngIf="step > 1" class="back" (click)="backClicked.emit()">Back</button>
-  <button
-    class="next"
-    [class.orange]="canProceed"
-    [class.grey]="!canProceed"
-    [disabled]="!canProceed"
-    (click)="nextClicked.emit()"
-  >
-    {{ step === 3 ? 'Finish' : 'Next' }}
-  </button>
+<div class="main-cta" id="main-cta-1">
+
+<button
+  class="cta-btn back"
+  [disabled]="backDisabled"
+  (click)="back.emit()">
+  Back
+</button>
+<button
+  class="cta-btn next"
+  [ngClass]="nextDisabled ? 'grey' : 'orange'"
+  [disabled]="nextDisabled"
+  (click)="next.emit()">
+  Next
+</button>
+
 </div>

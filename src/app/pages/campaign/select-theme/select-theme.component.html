@@ -1,24 +1,21 @@
-<div class="select-theme-container">
+<div class="theme-container">
   <mat-form-field appearance="outline" class="theme-select-field">
     <mat-label>Select Vertical</mat-label>
     <mat-select [(ngModel)]="selectedVertical" (selectionChange)="onVerticalChange()">
-      <mat-option *ngFor="let vertical of verticals" [value]="vertical">
-        {{ vertical }}
+      <mat-option *ngFor="let vertical of verticals" [value]="vertical.verticalId">
+        {{ vertical.verticalname }}
       </mat-option>
     </mat-select>
   </mat-form-field>
 
-  <div class="theme-list" *ngIf="filteredThemes.length > 0">
+  <div *ngIf="templates.length && selectedVertical" class="theme-list">
     <div
+      *ngFor="let template of templates"
+      (click)="selectedTheme = template.templateId; onThemeChange()"
+      [class.selected]="selectedTheme === template.templateId"
       class="theme-card"
-      *ngFor="let theme of filteredThemes"
-      [class.selected]="selectedTheme === theme"
-      (click)="selectTheme(theme)">
-      {{ theme }}
+    >
+      {{ template.templatename }}
     </div>
   </div>
-
-  <button mat-raised-button color="primary" (click)="goNext()">
-    Next →
-  </button>
 </div>

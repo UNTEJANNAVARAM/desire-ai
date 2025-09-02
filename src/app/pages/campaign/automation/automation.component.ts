@@ -1,29 +1,36 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-automation',
-  standalone: true,
-  imports: [CommonModule, MatButtonToggleModule, MatCardModule],
   templateUrl: './automation.component.html',
   styleUrls: ['./automation.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatCardModule,
+    MatButtonToggleModule,
+    MatButtonModule,
+  ],
 })
 export class AutomationComponent {
   @Output() automationToggle = new EventEmitter<boolean>();
-  @Output() automationDone = new EventEmitter<boolean>();
+  @Output() automationDone = new EventEmitter<void>();
 
-  automationOn: boolean = false;
+  automationOn = false;
 
   toggleAutomation(value: string) {
-  this.automationOn = value === 'on';
-  this.automationToggle.emit(this.automationOn);
-}
-
+    this.automationOn = value === 'on';
+    this.automationToggle.emit(this.automationOn);
+  }
 
   save() {
-    this.automationDone.emit(this.automationOn);
+    this.automationDone.emit();
     alert(`Automation is ${this.automationOn ? 'ON' : 'OFF'}`);
   }
 }

@@ -1,6 +1,7 @@
-import { Component, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Output, EventEmitter, OnInit } from '@angular/core';
+import { CommonModule, NgIf } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,25 +14,28 @@ import { MatButtonModule } from '@angular/material/button';
   standalone: true,
   imports: [
     CommonModule,
+    NgIf,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
-    MatButtonModule,
-  ],
+    MatButtonModule
+  ]
 })
-export class CampaignDetailsComponent {
+export class CampaignDetailsComponent implements OnInit {
   @Output() validityChange = new EventEmitter<boolean>();
   @Output() fileSelected = new EventEmitter<Event>();
 
-  campaignForm = new FormGroup({
-    description: new FormControl('', [Validators.required, Validators.minLength(10)]),
-    offer: new FormControl('', [Validators.required, Validators.minLength(5)]),
-    visual: new FormControl('', [Validators.required, Validators.minLength(10)]),
-    referenceImage: new FormControl<File | null>(null),
-  });
+  campaignForm!: FormGroup;
 
-  constructor() {
+  ngOnInit() {
+    this.campaignForm = new FormGroup({
+      description: new FormControl('', [Validators.required, Validators.minLength(10)]),
+      offer: new FormControl('', [Validators.required, Validators.minLength(5)]),
+      visual: new FormControl('', [Validators.required, Validators.minLength(10)]),
+      referenceImage: new FormControl(null),
+    });
+
     this.campaignForm.statusChanges.subscribe(() => {
       this.validityChange.emit(this.campaignForm.valid);
     });

@@ -1,35 +1,23 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { Vertical, Template, Asset, Campaign, CampaignResponse } from '../models/models';
-import { DUMMIES } from '../data/data';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Campaign, CampaignResponse } from '../models/campaign.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class CampaignService {
-
-  getVerticals(): Observable<Vertical[]> {
-    return of(DUMMIES.VERTICALS);
-  }
-
-  getTemplates(verticalId: string): Observable<Template[]> {
-    const templates = DUMMIES.TEMPLATES.filter(t => t.verticalId === verticalId);
-    return of(templates);
-  }
-
-  getAssets(templateId: string): Observable<Asset[]> {
-    const assets = DUMMIES.ASSETS.filter(a => a.templateId === templateId);
-    return of(assets);
-  }
+  constructor(private http: HttpClient) {}
 
   createCampaign(campaign: Campaign): Observable<CampaignResponse> {
-    // simulate cloning asset IDs with "_cloned" suffix (index appended)
-    const clonedAssets = campaign.assets.map((id, i) => id + '_cloned_' + i);
-    const response: CampaignResponse = {
-       ...campaign,
-       campaignId: 'cmp_' + Math.floor(Math.random() * 100000).toString(),
-       assets: clonedAssets,
-    };
-    return of(response);
+    return this.http.post<CampaignResponse>(`/api/v1/campaign/create`, campaign);
+  }
+
+  getCampaign(campaignId: string): Observable<CampaignResponse> {
+    return this.http.get<CampaignResponse>(`/api/v1/campaign/${campaignId}/get`);
+  }
+
+  // For dashboard/listing
+  getAllCampaigns(): Observable<CampaignResponse[]> {
+    // Adjust endpoint to your backend API. Example:
+    return this.http.get<CampaignResponse[]>(`/api/v1/campaign/list`);
   }
 }
