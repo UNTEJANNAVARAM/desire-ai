@@ -1,4 +1,4 @@
-.campaign-form {
+ /* .campaign-form {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -32,4 +32,54 @@ input[type='file'] {
 .selected-file {
   font-style: italic;
   color: #888;
+}  */
+
+.campaign-form-container {
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
 }
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+  color: #444;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+/* .save-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #f57c00;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  background-color: #e66b00;
+} */
