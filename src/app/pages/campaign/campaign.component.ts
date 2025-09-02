@@ -6,7 +6,6 @@ import { SelectThemeComponent } from './select-theme/select-theme.component';
 import { SelectAssetsComponent } from './select-assets/select-assets.component';
 import { AutomationComponent } from './automation/automation.component';
 import { AssetDetailsComponent } from './asset-details/asset-details.component';
-import { DataSourceComponent } from './data-source/data-source.component';
 import { MainCtaComponent } from '../../components/main-cta/main-cta.component';
 
 import { VerticalService } from '../../services/vertical.service';
@@ -31,7 +30,6 @@ type Step = 'details' | 'theme' | 'assets' | 'automation' | 'asset-details' | 'd
     SelectAssetsComponent,
     AutomationComponent,
     AssetDetailsComponent,
-    DataSourceComponent,
     MainCtaComponent,
   ],
 })
@@ -151,9 +149,9 @@ decreaseChildCount(event: any) {
     this.isAssetDetailsValid = valid;
   }
 
-  onDataSourceValidity(valid: boolean) {
-    this.isDataSourceValid = valid;
-  }
+  // onDataSourceValidity(valid: boolean) {
+  //   this.isDataSourceValid = valid;
+  // }
 
   canGoBack(): boolean {
     return this.step !== 'details';

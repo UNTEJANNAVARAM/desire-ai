@@ -7,3 +7,228 @@
 
   <button (click)="save()">Save</button>
 </form>
+
+<mat-tab-group>
+  
+  <!-- Asset Details Tab -->
+  <mat-tab label="Asset Details">
+    <div class="tab-content">
+
+      <!-- Secondary Text -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Secondary text</mat-label>
+        <textarea matInput rows="2"
+            [(ngModel)]="secondaryText"
+            placeholder="Want cards, teddies, chocolates, hampers & more?"></textarea>
+      </mat-form-field>
+      <div class="field-actions">
+        <button mat-icon-button color="primary" matTooltip="Edit">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="primary" matTooltip="Duplicate">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+        <button mat-icon-button color="accent" matTooltip="AI Generate">
+          <mat-icon>auto_awesome</mat-icon>
+        </button>
+      </div>
+
+      <!-- Hero Copy -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Hero copy</mat-label>
+        <textarea matInput rows="2"
+            [(ngModel)]="heroCopy"
+            placeholder="Find the perfect Valentine's gift!"></textarea>
+      </mat-form-field>
+      <div class="field-actions">
+        <button mat-icon-button color="primary" matTooltip="Edit">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="primary" matTooltip="Duplicate">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+        <button mat-icon-button color="accent" matTooltip="AI Generate">
+          <mat-icon>auto_awesome</mat-icon>
+        </button>
+      </div>
+
+      <!-- CTA -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>CTA</mat-label>
+        <input matInput [(ngModel)]="ctaText" placeholder="Shop now">
+      </mat-form-field>
+      <div class="field-actions">
+        <button mat-icon-button color="primary" matTooltip="Edit">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="primary" matTooltip="Duplicate">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+        <button mat-icon-button color="accent" matTooltip="AI Generate">
+          <mat-icon>auto_awesome</mat-icon>
+        </button>
+      </div>
+
+      <!-- Product Controls Section -->
+      <div class="product-controls-section">
+        <mat-tab-group class="product-tabs" mat-stretch-tabs>
+          
+          <!-- Product Image Tab -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <mat-icon>image</mat-icon>
+              <span>Product image</span>
+            </ng-template>
+            
+            <div class="product-tab-content">
+              <mat-card class="product-card">
+                <div class="image-preview-container">
+                  <div *ngIf="!productImage" class="placeholder-img">
+                    <mat-icon>image</mat-icon>
+                  </div>
+                  <div class="image-overlay">
+                    <button mat-icon-button (click)="editProductImage()">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="deleteProductImage()">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </div>
+
+                <app-image-customiser
+                  [image]="productImage"
+                  (imageChange)="productImage = $event">
+                </app-image-customiser>
+
+                <div class="instruction-box">
+                  <p>Remove the background and increase brightness a little.</p>
+                  <p class="try-text"><strong>Ok let's try</strong></p>
+                </div>
+
+                <div class="slider-container">
+                  <mat-slider min="0" max="100" step="1" class="brightness-slider">
+                    <input matSliderThumb [value]="brightness" (input)="onBrightnessChange($event)">
+                  </mat-slider>
+                  <button mat-icon-button color="primary" class="slider-action-btn">
+                    <mat-icon>play_arrow</mat-icon>
+                  </button>
+                </div>
+              </mat-card>
+            </div>
+          </mat-tab>
+
+          <!-- Background Tab -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <mat-icon>wallpaper</mat-icon>
+              <span>Background</span>
+            </ng-template>
+            
+            <div class="product-tab-content">
+              <mat-card class="product-card">
+                <div class="image-preview-container">
+                  <div *ngIf="!backgroundImage" class="placeholder-background">
+                    <mat-icon>wallpaper</mat-icon>
+                  </div>
+                  <div class="image-overlay">
+                    <button mat-icon-button (click)="editBackgroundImage()">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="deleteBackgroundImage()">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </div>
+
+                <app-image-customiser
+                  [image]="backgroundImage"
+                  (imageChange)="backgroundImage = $event">
+                </app-image-customiser>
+
+                <div class="instruction-box">
+                  <p>Remove the petals and add <strong style="color: #FEBD93;">#FEBD93</strong> coloured little hearts shaped blurred sheen.</p>
+                  <p class="done-text"><strong>Done</strong></p>
+                  <p>Add shine on the sheen</p>
+                </div>
+
+                <div class="slider-container">
+                  <mat-slider min="0" max="1" step="0.1" class="shine-slider">
+                    <input matSliderThumb [value]="shine" (input)="onShineInput($event)">
+                  </mat-slider>
+                  <button mat-icon-button color="primary" class="slider-action-btn">
+                    <mat-icon>play_arrow</mat-icon>
+                  </button>
+                </div>
+              </mat-card>
+            </div>
+          </mat-tab>
+
+          <!-- Brand Logos Tab -->
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <mat-icon>business</mat-icon>
+              <span>Brand logos</span>
+            </ng-template>
+            
+            <div class="product-tab-content">
+              <mat-card class="product-card logos-card">
+                <div class="logos-grid">
+                  <div class="logo-item" *ngFor="let logo of brandLogos; let i = index">
+                    <div class="logo-container">
+                      <img [src]="logo" class="logo-img" />
+                      <button mat-icon-button color="primary" (click)="logoInput.click()" matTooltip="Replace logo">
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                      <input #logoInput type="file" accept="image/*" hidden
+                             (change)="onLogoReplace($event, i)" />
+                    </div>
+                  </div>
+
+                  <div class="logo-upload-placeholder">
+                    <button mat-stroked-button color="primary" (click)="onUpload('logo')" class="upload-logo-btn">
+                      <mat-icon>upload</mat-icon>
+                      Upload
+                    </button>
+                  </div>
+                </div>
+
+                <div class="logos-actions" *ngIf="brandLogos.length > 0">
+                  <button mat-icon-button color="warn" (click)="deleteAllLogos()" matTooltip="Delete all logos">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </mat-card>
+            </div>
+          </mat-tab>
+
+        </mat-tab-group>
+      </div>
+    </div>
+  </mat-tab>
+
+  <!-- Data Source Tab -->
+  <mat-tab label="Data Source">
+    <div class="tab-content">
+      <h3>Select & input data source</h3>
+      <mat-card class="data-source-card">
+        <mat-radio-group [(ngModel)]="selectedDataSource" class="data-source-options">
+          <mat-radio-button value="googlesheet" class="data-source-option">
+            <mat-icon>table_chart</mat-icon>
+            Google sheet
+          </mat-radio-button>
+          <mat-radio-button value="attachment" class="data-source-option">
+            <mat-icon>attach_file</mat-icon>
+            Attachment
+          </mat-radio-button>
+        </mat-radio-group>
+
+        <mat-form-field appearance="outline" class="full-width data-source-field">
+          <mat-label>Data source link</mat-label>
+          <textarea matInput rows="4" [(ngModel)]="dataSourceLink" placeholder="Value"></textarea>
+        </mat-form-field>
+      </mat-card>
+    </div>
+  </mat-tab>
+</mat-tab-group>
+

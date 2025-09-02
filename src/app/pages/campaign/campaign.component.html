@@ -70,14 +70,14 @@
           </ng-container>
         </ng-container>
 
-        <ng-container *ngSwitchCase="'data-source'">
+        <!-- <ng-container *ngSwitchCase="'data-source'">
           <ng-container *ngIf="selectedAssetForDetails; else noAssetSelected">
             <app-data-source
               [asset]="selectedAssetForDetails"
               (validityChange)="onDataSourceValidity($event)">
             </app-data-source>
           </ng-container>
-        </ng-container>
+        </ng-container> -->
 
         <ng-template #noAssetSelected>
           <div class="panel-help">
