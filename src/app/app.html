@@ -1,9 +1,10 @@
-<app-header></app-header>
-<div class="main-shell">
-  <app-left-nav></app-left-nav>
-  <div class="main-content-3col">
-    <!-- Three persistent parts/columns side-by-side -->
+<app-header class="header-bar"></app-header>
+
+<div class="body-container">
+  <app-left-nav class="left-nav-bar"></app-left-nav>
+  <main class="main-content">
     <router-outlet></router-outlet>
-  </div>
+  </main>
 </div>
-<app-footer></app-footer>
+
+<app-footer class="footer-bar"></app-footer>

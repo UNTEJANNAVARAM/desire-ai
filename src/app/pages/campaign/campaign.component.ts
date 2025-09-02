@@ -159,39 +159,59 @@ decreaseChildCount(event: any) {
     return this.step !== 'details';
   }
 
-  canGoNext(): boolean {
-    switch (this.step) {
-      case 'details': return this.isDetailsValid;
-      case 'theme': return this.isThemeValid;
-      case 'assets': return this.isAssetsValid;
-      case 'automation': return this.isAutomationValid;
-      case 'asset-details': return this.isAssetDetailsValid;
-      case 'data-source': return this.isDataSourceValid;
-      default: return false;
-    }
-  }
+canGoNext(): boolean {
+  switch (this.step) {
+    case 'assets':
+      const numSelectedAssets = this.selectedAssetsIds.length;
+      const isAutomationOn = this.automatedAssets.length > 0;
 
-  onNext() {
-    if (!this.canGoNext()) return;
-    switch (this.step) {
-      case 'details':
-        this.step = 'theme';
-        break;
-      case 'theme':
-        this.step = 'assets';
-        this.loadAssets();
-        break;
-      case 'assets':
-        this.step = 'automation';
-        break;
-      case 'automation':
-        if (this.selectedAssetForDetails) this.step = 'asset-details';
-        break;
-      case 'asset-details':
-        this.step = 'data-source';
-        break;
-    }
+      if (numSelectedAssets === 1 && !isAutomationOn) return true; // Single asset edit
+      if (numSelectedAssets > 1 && isAutomationOn) return true; // Automation step allowed
+      return false;
+
+    // other cases remain unchanged:
+    case 'details': return this.isDetailsValid;
+    case 'theme': return this.isThemeValid;
+    case 'automation': return this.isAutomationValid;
+    case 'asset-details': return this.isAssetDetailsValid;
+    case 'data-source': return this.isDataSourceValid;
+    default: return false;
   }
+}
+
+onNext() {
+  if (!this.canGoNext()) return;
+
+  switch (this.step) {
+    case 'details':
+      this.step = 'theme';
+      break;
+    case 'theme':
+      this.step = 'assets';
+      this.loadAssets();
+      break;
+    case 'assets':
+      const singleAssetSelected = this.selectedAssetsIds.length === 1;
+      const isAutomationOn = this.automatedAssets.length > 0;
+
+      if (singleAssetSelected && !isAutomationOn) {
+        // Open asset details with the selected asset
+        const assetId = this.selectedAssetsIds[0];
+        const asset = this.assets.find(a => a.assetId === assetId);
+        if (asset) this.onEditAsset(asset);
+        this.step = 'asset-details';
+      } else if (isAutomationOn) {
+        this.step = 'automation';
+      }
+      break;
+    case 'automation':
+      if (this.selectedAssetForDetails) this.step = 'asset-details';
+      break;
+    case 'asset-details':
+      this.step = 'data-source';
+      break;
+  }
+}
 
   onBack() {
     switch (this.step) {
