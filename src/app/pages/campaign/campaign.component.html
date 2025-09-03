@@ -1,3 +1,7 @@
+<app-header [activeStep]="numericStep"></app-header>
+
+
+
 <div class="campaign-wrapper">
   <div class="campaign-container">
 
@@ -68,7 +72,6 @@
         <app-asset-details
   *ngIf="step === 'asset-details' && selectedAssetForDetails"
   [asset]="selectedAssetForDetails!"
-  [readonly]="step !== 'asset-details'"
   (validityChange)="onAssetDetailsValidity($event)">
 </app-asset-details>
 

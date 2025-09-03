@@ -10,8 +10,10 @@
 .campaign-form {
   display: flex;
   flex-direction: column;
-  gap: 0px;  /* No gap, keep cards visually grouped */
+  gap: 0px;
   padding: 18px 16px 0 16px;
+  max-height: none;
+  overflow: visible;
 }
 
 .input-card {
@@ -22,7 +24,8 @@
   margin-bottom: 16px;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible;
+  max-height: none;
 }
 
 .input-label {
@@ -32,7 +35,6 @@
   margin-bottom: 6px;
 }
 
-/* Only textarea should scroll, never the whole form */
 .scrollable-textarea {
   width: 100%;
   resize: vertical;
@@ -51,7 +53,6 @@
   scrollbar-color: #d76f29 #ffeada;
 }
 
-/* CUSTOM ORANGE SCROLLBAR FOR TEXTAREA */
 .scrollable-textarea::-webkit-scrollbar {
   width: 7px;
   background: #ffeada;
@@ -61,20 +62,21 @@
   border-radius: 8px;
 }
 .scrollable-textarea::-webkit-scrollbar-button {
-  display: none !important;
-  height: 0;
-  width: 0;
+  display: none !important; height: 0; width: 0;
 }
 
-/* Reference image section */
 .file-input-container {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  margin-top: 8px;
-  color: #f57c00;
-  font-size: 15px;
-  padding-left: 2px;
+  display: flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+  margin-top: 8px !important;
+  color: #f57c00 !important;
+  font-size: 15px !important;
+  padding-left: 2px !important;
+  height: auto !important;
+  position: relative !important;
+  visibility: visible !important;
+  overflow: visible !important;
 }
 
 .file-label {

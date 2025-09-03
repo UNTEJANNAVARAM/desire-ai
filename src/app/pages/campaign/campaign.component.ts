@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { HeaderComponent } from '../../components/header/header.component'; 
 import { CampaignDetailsComponent } from './campaign-details/campaign-details.component';
 import { SelectThemeComponent } from './select-theme/select-theme.component';
 import { SelectAssetsComponent } from './select-assets/select-assets.component';
@@ -8,7 +8,6 @@ import { AutomationComponent } from './automation/automation.component';
 import { AssetDetailsComponent } from './asset-details/asset-details.component';
 import { DataSourceComponent } from './data-source/data-source.component';
 import { MainCtaComponent } from '../../components/main-cta/main-cta.component';
-
 import { VerticalService } from '../../services/vertical.service';
 import { TemplateService } from '../../services/template.service';
 import { AssetService } from '../../services/asset.service';
@@ -19,7 +18,6 @@ import { Asset } from '../../models/asset.model';
 
 import { MatIconModule } from '@angular/material/icon';   
 type Step = 'details' | 'theme' | 'assets' | 'automation' | 'asset-details' | 'data-source';
-
 @Component({
   selector: 'app-campaign',
   templateUrl: './campaign.component.html',
@@ -34,7 +32,9 @@ type Step = 'details' | 'theme' | 'assets' | 'automation' | 'asset-details' | 'd
     AssetDetailsComponent,
     DataSourceComponent,
     MainCtaComponent,
-    MatIconModule 
+    MatIconModule,
+    HeaderComponent, 
+      AssetDetailsComponent,
   ],
 })
 export class CampaignComponent {
@@ -266,4 +266,17 @@ onNext() {
     const found = this.assets.find(a => a.assetId === id);
     return found ? found.assetname : '';
   }
+  get numericStep(): number {
+  switch (this.step) {
+    case 'details': return 0;
+    case 'theme': return 0.5;
+    case 'assets': return 1;
+    case 'automation': return 1.5;
+    case 'asset-details': return 2;
+    case 'data-source': return 2.5;
+    // Add more as needed
+    default: return 1;
+  }
+}
+
 }

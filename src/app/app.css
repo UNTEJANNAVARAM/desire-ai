@@ -39,7 +39,7 @@ html, body {
   top: 45px; /* header height */
   left: 66px; /* left nav width */
   right: 0;
-  bottom: 18px; /* footer height */
+  bottom: 25px; /* footer height */
   height: calc(100vh - 45px - 18px);
   background: #f9f7f1;
   box-sizing: border-box;

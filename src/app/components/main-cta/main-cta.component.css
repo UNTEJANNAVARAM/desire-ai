@@ -1,10 +1,10 @@
 .main-cta {
   position: fixed;
-  bottom: 18px;           /* above footer height */
-  left: 66px;             /* offset for left nav */
+  bottom: 18px;
+  left: 66px;
   right: 0;
   gap: 10px;
-  height: 56px;           /* main-cta bar height */
+  height: 56px;
   background: #fff9f1;
   border-top: 1px solid #f2e2ce;
   box-sizing: border-box;
@@ -13,70 +13,22 @@
   justify-content: flex-end;
   padding: 0 24px;
   z-index: 1400;
-  font-family: Arial, sans-serif;    /* Match left-nav font */
-  font-weight: 400;                   /* Normal weight as left-nav */
-  color: #392f2d;                    /* Dark brown text color */
-}
-
-/* Button styles matching left-nav font and color */
-.cta-btn {
-  min-width: 80px;
-  height: 32px;
-  margin: 0;
-  border-radius: 5px;
-  font-weight: 400;                 /* Normal font weight */
-  font-size: 15px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  white-space: nowrap;
-  border: none;
-  transition: background-color 0.25s, color 0.25s;
-  color: #392f2d;                  /* Dark brown text color */
-}
-
-/* Back button with border and color consistent with left-nav */
-.cta-btn.back {
-  background-color: #fff;
-  border: 2px solid #d76f29;
-  color: #d76f29;
-  font-weight: 600;                 /* Keep bold on back for emphasis */
-}
-
-.cta-btn.back:disabled {
-  border-color: #eee;
-  color: #bbb;
-  cursor: not-allowed;
-}
-
-.cta-btn.back:not(:disabled):hover {
-  background-color: #fce7d1;
-}
-
-/* Next button colors with full orange fill when active */
-.cta-btn.next.orange {
-  background-color: #d76f29;
-  color: white;
-  font-weight: 600;                 /* Bold when active */
-}
-
-.cta-btn.next.grey {
-  background-color: #ccc;
-  color: #888;
-  cursor: not-allowed;
+  font-family: Arial, sans-serif;
   font-weight: 400;
+  color: #392f2d;
 }
 
-/* Arrows for consistency */
-.cta-btn.back::before {
-  content: "←";
-  margin-right: 6px;
-  font-weight: 600;
+.cta-btn {
+  min-width: 80px; height: 32px; margin: 0; border-radius: 5px;
+  font-weight: 400; font-size: 15px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  white-space: nowrap; border: none; transition: background-color 0.25s, color 0.25s;
+  color: #392f2d;
 }
-
-.cta-btn.next::after {
-  content: "→";
-  margin-left: 6px;
-  font-weight: 600;
-}
+.cta-btn.back { background-color: #fff; border: 2px solid #d76f29; color: #d76f29; font-weight: 600; }
+.cta-btn.back:disabled { border-color: #eee; color: #bbb; cursor: not-allowed; }
+.cta-btn.back:not(:disabled):hover { background-color: #fce7d1; }
+.cta-btn.next.orange { background-color: #d76f29; color: white; font-weight: 600; }
+.cta-btn.next.grey { background-color: #ccc; color: #888; cursor: not-allowed; font-weight: 400; }
+.cta-btn.back::before { content: "←"; margin-right: 6px; font-weight: 600; }
+.cta-btn.next::after { content: "→"; margin-left: 6px; font-weight: 600; }
