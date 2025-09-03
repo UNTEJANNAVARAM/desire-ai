@@ -1,0 +1,74 @@
+<mat-card 
+  class="asset-card" 
+  [class.selected]="isSelected"
+  (click)="onEditAsset()">
+  
+  <!-- Checkbox overlay -->
+  <div class="checkbox-overlay" *ngIf="showCheckbox" (click)="$event.stopPropagation()">
+    <mat-checkbox
+      [checked]="isSelected"
+      (change)="onSelectionChange($event)"
+      color="primary">
+    </mat-checkbox>
+  </div>
+
+  <!-- Asset Thumbnail -->
+  <div class="asset-thumbnail">
+    <img 
+      [src]="asset.thumbnail" 
+      [alt]="asset.name"
+      (error)="onImageError($event)"
+      class="thumbnail-image">
+    
+    <!-- Size badge -->
+    <div class="size-badge">
+      {{ asset.size }}
+    </div>
+  </div>
+
+  <!-- Asset Content -->
+  <mat-card-content class="asset-content">
+    <h3 class="asset-name">{{ asset.name }}</h3>
+    
+    <p class="asset-description" *ngIf="asset.description">
+      {{ asset.description }}
+    </p>
+
+    <!-- Asset metadata -->
+    <div class="asset-metadata">
+      <mat-chip-set>
+        <mat-chip 
+          *ngIf="asset.category" 
+          class="category-chip"
+          color="primary" 
+          variant="outlined">
+          {{ asset.category }}
+        </mat-chip>
+        <mat-chip 
+          *ngIf="asset.type" 
+          class="type-chip"
+          color="accent" 
+          variant="outlined">
+          {{ asset.type }}
+        </mat-chip>
+      </mat-chip-set>
+    </div>
+  </mat-card-content>
+
+  <!-- Card Actions -->
+  <mat-card-actions class="card-actions">
+    <div class="left-actions">
+      <mat-slide-toggle color="primary" (change)="$event ? automate.emit({id: asset.id, enabled: $event.checked}) : null">
+        Automate
+      </mat-slide-toggle>
+    </div>
+    <button 
+      mat-button 
+      color="primary" 
+      class="edit-button"
+      (click)="onEditAsset()">
+      <mat-icon>edit</mat-icon>
+      Edit
+    </button>
+  </mat-card-actions>
+</mat-card>

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component'; 
 import { CampaignDetailsComponent } from './campaign-details/campaign-details.component';
-import { SelectThemeComponent } from './select-theme/select-theme.component';
+import { SelectThemeNewComponent } from './select-theme-new/select-theme-new.component';
 import { SelectAssetsComponent } from './select-assets/select-assets.component';
 import { AutomationComponent } from './automation/automation.component';
 import { AssetDetailsComponent } from './asset-details/asset-details.component';
@@ -11,9 +11,10 @@ import { MainCtaComponent } from '../../components/main-cta/main-cta.component';
 import { VerticalService } from '../../services/vertical.service';
 import { TemplateService } from '../../services/template.service';
 import { AssetService } from '../../services/asset.service';
+import { CampaignService } from '../../services/campaign.service';
 
-import { Vertical } from '../../models/vertical.model';
-import { Template } from '../../models/template.model';
+import { VerticalOption } from '../../components/vertical-selector/vertical-selector.component';
+import { TemplateCard } from '../../components/template-card/template-card.component';
 import { Asset } from '../../models/asset.model';
 
 import { MatIconModule } from '@angular/material/icon';   
@@ -26,7 +27,7 @@ type Step = 'details' | 'theme' | 'assets' | 'automation' | 'asset-details' | 'd
   imports: [
     CommonModule,
     CampaignDetailsComponent,
-    SelectThemeComponent,
+    SelectThemeNewComponent,
     SelectAssetsComponent,
     AutomationComponent,
     AssetDetailsComponent,
@@ -38,14 +39,19 @@ type Step = 'details' | 'theme' | 'assets' | 'automation' | 'asset-details' | 'd
   ],
 })
 export class CampaignComponent {
+
+  step: Step = 'theme';
+=======
    
   step: Step = 'details';
 
-  verticals: Vertical[] = [];
-  templates: Template[] = [];
+
+  verticals: VerticalOption[] = [];
+  templates: TemplateCard[] = [];
   assets: Asset[] = [];
 
   selectedVertical = '';
+  selectedSubCategory = '';
   selectedTemplate = '';
   selectedAssetsIds: string[] = [];
   automatedAssets: { parentId: string; childCount: number }[] = [];
@@ -65,19 +71,23 @@ export class CampaignComponent {
     private verticalService: VerticalService,
     private templateService: TemplateService,
     private assetService: AssetService,
+    private campaignService: CampaignService,
   ) {}
 
   ngOnInit() {
     this.verticalService.getVerticals()
-      .subscribe((data: Vertical[]) => (this.verticals = data));
+      .subscribe((data: VerticalOption[]) => {
+        this.verticals = data;
+      });
   }
 
   onDetailsValidity(valid: boolean) {
     this.isDetailsValid = valid;
   }
 
-  onVerticalSelected(verticalId: string) {
-    this.selectedVertical = verticalId;
+  onVerticalSelected(data: {verticalId: string, subCategory?: string}) {
+    this.selectedVertical = data.verticalId;
+    this.selectedSubCategory = data.subCategory || '';
     this.selectedTemplate = '';
     this.isThemeValid = false;
     this.templates = [];
@@ -90,9 +100,11 @@ export class CampaignComponent {
     this.isDataSourceValid = false;
     this.selectedAssetForDetails = null;
 
-    if (verticalId) {
-      this.templateService.getTemplates(verticalId)
-        .subscribe((data: Template[]) => (this.templates = data));
+    if (data.verticalId) {
+      this.templateService.getTemplates(data.verticalId, data.subCategory)
+        .subscribe((data: TemplateCard[]) => {
+          this.templates = data;
+        });
     }
   }
 
@@ -165,12 +177,8 @@ decreaseChildCount(event: any) {
 canGoNext(): boolean {
   switch (this.step) {
     case 'assets':
-      const numSelectedAssets = this.selectedAssetsIds.length;
-      const isAutomationOn = this.automatedAssets.length > 0;
-
-      if (numSelectedAssets === 1 && !isAutomationOn) return true; // Single asset edit
-      if (numSelectedAssets > 1 && isAutomationOn) return true; // Automation step allowed
-      return false;
+      const numSelectedAssets = this.campaignService.getSelectedAssets().length;
+      return numSelectedAssets > 0;
 
     // other cases remain unchanged:
     case 'details': return this.isDetailsValid;
@@ -194,16 +202,14 @@ onNext() {
       this.loadAssets();
       break;
     case 'assets':
-      const singleAssetSelected = this.selectedAssetsIds.length === 1;
-      const isAutomationOn = this.automatedAssets.length > 0;
-
-      if (singleAssetSelected && !isAutomationOn) {
-        // Open asset details with the selected asset
-        const assetId = this.selectedAssetsIds[0];
-        const asset = this.assets.find(a => a.assetId === assetId);
+      const selected = this.campaignService.getSelectedAssets();
+      if (selected.length === 1) {
+        const only = selected[0];
+        // Try to find actual Asset by name match fallback
+        const asset = this.assets.find(a => a.assetname === only.name);
         if (asset) this.onEditAsset(asset);
         this.step = 'asset-details';
-      } else if (isAutomationOn) {
+      } else if (selected.length > 1) {
         this.step = 'automation';
       }
       break;

@@ -1,0 +1,98 @@
+<div class="asset-list-container">
+  <!-- Header Section -->
+  <div class="asset-header">
+    <div class="header-left">
+      <div class="title-row">
+        <span class="title">Asset selection</span>
+        <span class="counter-chip">{{ selectionState.selectedCount }}/{{ selectionState.totalAssets | number:'2.0' }}</span>
+      </div>
+      <div class="controls-row">
+        <mat-slide-toggle 
+          color="primary"
+          [checked]="isAllSelected()"
+          (change)="onToggleSelectAll($event)">
+          Select all
+        </mat-slide-toggle>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="search-field rounded">
+        <mat-icon class="search-icon">search</mat-icon>
+        <input 
+          type="text" 
+          placeholder="Search" 
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="applyQuickSearch()"/>
+      </div>
+      <button mat-icon-button class="ghost-btn" title="Filters" (click)="toggleFilterPanel()">
+        <mat-icon color="primary">filter_alt</mat-icon>
+      </button>
+      <button mat-icon-button class="ghost-btn" title="List view">
+        <mat-icon>view_list</mat-icon>
+      </button>
+      <button mat-icon-button class="ghost-btn" title="Grid view">
+        <mat-icon>grid_view</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Advanced filter removed per spec; header search only -->
+
+  <!-- Assets Grid -->
+  <div class="assets-grid" *ngIf="filteredAssets.length > 0" [class.list-view]="isListView">
+    <app-asset-card
+      *ngFor="let asset of filteredAssets"
+      [asset]="asset"
+      [isSelected]="assetService.isAssetSelected(asset.id)"
+      (selectionChange)="onAssetSelectionChange($event)"
+      (editAsset)="onEditAsset($event)"
+      (automate)="onAutomate($event)">
+    </app-asset-card>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="filteredAssets.length === 0">
+    <div class="empty-content">
+      <mat-icon class="empty-icon">search_off</mat-icon>
+      <h3 class="empty-title">No assets found</h3>
+      <p class="empty-description">
+        Try adjusting your search terms or filters to find what you're looking for.
+      </p>
+      <button 
+        mat-button 
+        color="primary" 
+        (click)="clearSelection()"
+        class="reset-filters-btn">
+        <mat-icon>refresh</mat-icon>
+        Reset Filters
+      </button>
+    </div>
+  </div>
+
+  <!-- Selected Assets Summary -->
+  <div class="selected-summary" *ngIf="selectionState.selectedCount > 0">
+    <div class="summary-header">
+      <h3 class="summary-title">
+        <mat-icon>check_circle</mat-icon>
+        Selected Assets ({{ selectionState.selectedCount }})
+      </h3>
+    </div>
+    
+    <div class="selected-assets-list">
+      <div 
+        *ngFor="let asset of selectionState.selectedAssets" 
+        class="selected-asset-item">
+        <span class="asset-name">{{ asset.name }}</span>
+        <span class="asset-size">{{ asset.size }}</span>
+        <button 
+          mat-icon-button 
+          color="warn" 
+          (click)="assetService.deselectAsset(asset.id)"
+          class="remove-asset-btn"
+          title="Remove from selection">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
