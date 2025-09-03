@@ -1,1 +1,9 @@
-/* Styles are now handled by the new AssetListComponent */
+mat-card {
+  padding: 20px;
+  max-width: 400px;
+  margin: 10px auto;
+}
+
+h2 {
+  margin-bottom: 15px;
+}

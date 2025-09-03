@@ -19,18 +19,6 @@
           (validityChange)="onDetailsValidity($event)">
         </app-campaign-details>
 
-        <app-select-theme-new
-          *ngSwitchCase="'theme'"
-          [verticals]="verticals"
-          [templates]="templates"
-          (verticalChange)="onVerticalSelected($event)"
-          (templateChange)="onTemplateSelected($event)">
-        </app-select-theme-new>
-      </ng-container>
-    </div>
-  </section>
-
-
         <div class="vertical-select-fixed" [hidden]="step !== 'theme'">
           <app-select-theme
             [readonly]="step !== 'theme'"
@@ -51,9 +39,7 @@
       </nav>
 
       <div class="panel-content panel-scroll">
-
-          *ngSwitchCase="'assets'">
-
+        <app-select-assets
           [readonly]="step !== 'assets'"
           [hidden]="step !== 'assets'"
           [assets]="assets"
@@ -62,7 +48,6 @@
           (selectionChange)="onAssetsSelected($event)"
           (editAsset)="onEditAsset($event)"
           (automateChanged)="toggleAutomate($event)">
-
         </app-select-assets>
 
         <app-automation
