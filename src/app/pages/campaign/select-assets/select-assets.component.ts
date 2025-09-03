@@ -1,6 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AssetListComponent } from '../../../components/asset-list/asset-list.component';
+
+import { MatSlideToggleModule, MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { MatCheckboxModule, MatCheckboxChange } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+
+import { Asset } from '../../../models/asset.model';
 
 @Component({
   selector: 'app-select-assets',
@@ -9,13 +15,12 @@ import { AssetListComponent } from '../../../components/asset-list/asset-list.co
   standalone: true,
   imports: [
     CommonModule,
-    AssetListComponent
+    MatSlideToggleModule,
+    MatCheckboxModule,
+    MatIconModule,
+    MatButtonModule,
   ],
 })
-export class SelectAssetsComponent {
-  // This component now delegates to the new AssetListComponent
-  // All functionality is handled by the AssetSelectionService and AssetListComponent
-
 export class SelectAssetsComponent implements OnInit {
   @Input() assets: Asset[] = [];
   @Input() automatedIds: string[] = [];
@@ -56,5 +61,4 @@ export class SelectAssetsComponent implements OnInit {
   editClicked(asset: Asset) {
     this.editAsset.emit(asset);
   }
-
 }

@@ -1,15 +1,4 @@
-
-.cta-bar {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 14px; /* per page-cta gap */
-  width: 100%;
-  padding: 8px 15px; /* per page-cta padding */
-  height: 56px; /* per page-cta height */
-  background: #fff9f1;
 .main-cta {
-
   position: fixed;
   bottom: 18px;
   left: 66px;
