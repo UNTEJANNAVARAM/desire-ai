@@ -1,62 +1,51 @@
-<form [formGroup]="campaignForm" class="campaign-form">
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Campaign Description</mat-label>
-    <textarea
-      matInput
-      placeholder="Enter campaign description"
-      formControlName="description"
-      rows="4"
-      maxlength="500"></textarea>
-    <mat-hint align="end">{{ campaignForm.get('description')?.value?.length || 0 }}/500</mat-hint>
-    <mat-error *ngIf="campaignForm.get('description')?.hasError('required')">
-      Description is required
-    </mat-error>
-    <mat-error *ngIf="campaignForm.get('description')?.hasError('minlength')">
-      Minimum 10 characters required
-    </mat-error>
-  </mat-form-field>
+<div class="campaign-details-panel">
 
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Offer Details</mat-label>
-    <textarea
-      matInput
-      placeholder="Enter offer details"
-      formControlName="offer"
-      rows="3"
-      maxlength="300"></textarea>
-    <mat-hint align="end">{{ campaignForm.get('offer')?.value?.length || 0 }}/300</mat-hint>
-    <mat-error *ngIf="campaignForm.get('offer')?.hasError('required')">
-      Offer details are required
-    </mat-error>
-    <mat-error *ngIf="campaignForm.get('offer')?.hasError('minlength')">
-      Minimum 5 characters required
-    </mat-error>
-  </mat-form-field>
+  <form [formGroup]="campaignForm" class="campaign-form">
 
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Visual Style Description</mat-label>
-    <textarea
-      matInput
-      placeholder="Describe visual style"
-      formControlName="visual"
-      rows="4"
-      maxlength="500"></textarea>
-    <mat-hint align="end">{{ campaignForm.get('visual')?.value?.length || 0 }}/500</mat-hint>
-    <mat-error *ngIf="campaignForm.get('visual')?.hasError('required')">
-      Visual style description is required
-    </mat-error>
-    <mat-error *ngIf="campaignForm.get('visual')?.hasError('minlength')">
-      Minimum 10 characters required
-    </mat-error>
-  </mat-form-field>
+    <!-- Campaign Description -->
+    <mat-card class="input-card">
+      <div class="input-label">Campaign description</div>
+      <textarea matInput
+        formControlName="description"
+        rows="5"
+        class="scrollable-textarea"
+        maxlength="500">
+      </textarea>
+      <mat-hint align="end">{{ campaignForm.get('description')?.value.length || 0 }}/500</mat-hint>
+    </mat-card>
 
-  <div class="file-input-container">
-    <label for="referenceImage" class="file-label">
-      <mat-icon color="warn">image</mat-icon> Reference Image
-    </label>
-    <input id="referenceImage" type="file" (change)="onFileSelected($event)" />
-    <div class="selected-file">
-      {{ campaignForm.get('referenceImage')?.value?.name || 'No file chosen' }}
+    <!-- Offer Details -->
+    <mat-card class="input-card">
+      <div class="input-label">Offer details</div>
+      <textarea matInput
+        formControlName="offer"
+        rows="3"
+        class="scrollable-textarea"
+        maxlength="300">
+      </textarea>
+      <mat-hint align="end">{{ campaignForm.get('offer')?.value.length || 0 }}/300</mat-hint>
+    </mat-card>
+
+    <!-- Visual Imagery Style Description -->
+    <mat-card class="input-card">
+      <div class="input-label">Visual imagery style description</div>
+      <textarea matInput
+        formControlName="visual"
+        rows="5"
+        class="scrollable-textarea"
+        maxlength="500">
+      </textarea>
+      <mat-hint align="end">{{ campaignForm.get('visual')?.value.length || 0 }}/500</mat-hint>
+    </mat-card>
+
+    <!-- Reference Image Upload -->
+    <div class="file-input-container">
+      <label class="file-label" mat-button>
+        <mat-icon color="warn" fontSize="18px">image</mat-icon>
+        Reference Image
+        <input type="file" (change)="onFileSelected($event)" />
+      </label>
+      <span class="selected-file" *ngIf="campaignForm.value.referenceImage?.name">{{ campaignForm.value.referenceImage.name }}</span>
     </div>
-  </div>
-</form>
+  </form>
+</div>

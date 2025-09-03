@@ -1,4 +1,5 @@
 import { Asset } from '../models/asset.model';
+
 export const ASSETS: Asset[] = [
   { assetId: 'a1', templateId: 't1', verticalId: 'v1', assetname: 'Asset 1', description: 'Desc 1', figmaURL: '', figmaId: '' },
   { assetId: 'a2', templateId: 't1', verticalId: 'v1', assetname: 'Asset 2', description: 'Desc 2', figmaURL: '', figmaId: '' },

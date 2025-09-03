@@ -1,88 +1,63 @@
 .header-bar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  background: #d76e3a; /* Step progress bar background */
+  background: #d76e3a;
   height: 45px;
-  width: 100%; /* fix overflow */
+  width: 100%;
   box-sizing: border-box;
-  padding: 0;
+  padding: 0 0;
 }
 
 .menu-area {
-  background: #d76e3a;   /* Now matches step progress bar */
-  border-top-left-radius: 6px;
-  border-bottom-left-radius: 6px;
-  padding: 0 16px;
-  height: 100%;
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
-  min-width: 68px;
-  /* Remove box-shadow if present */
+  padding-left: 10px;
 }
 
-
-/* keep other styles unchanged */
-
-
-
 .stepper-track {
+  flex: 1 1 auto; /* Take up all remaining space */
   display: flex;
   align-items: center;
-  flex: 1 1 auto;
-  min-width: 0;
+  justify-content: center; /* Center the steps horizontally */
+  gap: 0;
+}
+
+.profile-area {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  padding-right: 10px;
 }
 
 .step-item {
   display: flex;
   align-items: center;
 }
-
 .circle {
   display: flex;
   width: 30px;
   height: 30px;
   background: #fff;
-  color: #d76e3a;
+  color: #bbb;
   font-weight: bold;
   border-radius: 50%;
   align-items: center;
   justify-content: center;
   font-size: 1rem;
+  border: 2px solid #bdbdbd;
+  margin-left: 10px;
+}
+.circle.step-current {
+  background: #fff;
+  color: #d76e3a;
   border: 2px solid #d76e3a;
 }
-
 .line {
-  width: 90px;
+  width: 300px;
   height: 2px;
-  background: #fff;
-  display: inline-block;
+  background: #bdbdbd;
   margin: 0 4px;
 }
-
-.tick mat-icon {
-  color: #fff;
-  font-size: 30px;
-  margin-left: 12px;
-}
-
-.profile-area {
-  background: #fb9c58;
-  border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px;
-  padding: 0 16px;
-  min-width: 68px;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-.icon-btn mat-icon {
-  color: #fff;
-  font-size: 26px;
-}
-
-.icon-btn {
-  margin-left: 8px;
-}
+.tick .mat-icon { color: #bbb; font-size: 30px; margin-left: 12px; }
+.tick.tick-complete .mat-icon { color: #d76e3a; }

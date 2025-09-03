@@ -22,6 +22,7 @@ export class AutomationComponent {
   @Output() automationToggle = new EventEmitter<boolean>();
   @Output() automationDone = new EventEmitter<void>();
   @Input() automatedAssets: { parentId: string; childCount: number }[] = [];
+   @Input() readonly = false;
   automationOn = false;
 
   toggleAutomation(value: string) {

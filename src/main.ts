@@ -7,6 +7,6 @@ import { provideHttpClient } from '@angular/common/http';
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(appRoutes),
-    provideHttpClient(), // <-- THIS LINE IS NEEDED
+    provideHttpClient(),
   ],
 }).catch(err => console.error(err));

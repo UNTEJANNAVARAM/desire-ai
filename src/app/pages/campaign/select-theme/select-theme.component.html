@@ -1,21 +1,36 @@
 <div class="theme-container">
-  <mat-form-field appearance="outline" class="theme-select-field">
-    <mat-label>Select Vertical</mat-label>
-    <mat-select [(ngModel)]="selectedVertical" (selectionChange)="onVerticalChange()">
-      <mat-option *ngFor="let vertical of verticals" [value]="vertical.verticalId">
-        {{ vertical.verticalname }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
 
-  <div *ngIf="templates.length && selectedVertical" class="theme-list">
-    <div
-      *ngFor="let template of templates"
-      (click)="selectedTheme = template.templateId; onThemeChange()"
-      [class.selected]="selectedTheme === template.templateId"
-      class="theme-card"
-    >
-      {{ template.templatename }}
-    </div>
+  <div class="theme-select-header">
+    <mat-form-field appearance="outline" class="theme-select-field">
+      <mat-label>Select Vertical</mat-label>
+      <mat-select [(ngModel)]="selectedVertical" (selectionChange)="onVerticalChange()" disableRipple>
+        <mat-option *ngFor="let vertical of verticals" [value]="vertical.verticalId">
+          {{ vertical.verticalname }}
+        </mat-option>
+      </mat-select>
+      <mat-icon matSuffix class="orange-icon">expand_more</mat-icon>
+    </mat-form-field>
+
+    <button mat-icon-button 
+      [disabled]="!selectedVertical" 
+      (click)="togglePart1()"
+      [ngClass]="{'enabled-btn': selectedVertical, 'disabled-btn': !selectedVertical}">
+      <mat-icon>{{ part1Hidden ? 'arrow_drop_down' : 'arrow_drop_up' }}</mat-icon>
+    </button>
+  </div>
+
+  <!-- Bold line with arrow when part1 is hidden -->
+  <div *ngIf="part1Hidden" class="collapsed-header" (click)="togglePart1()">
+    <div class="bold-line"></div>
+    <mat-icon class="arrow-icon">arrow_right</mat-icon>
+  </div>
+
+  <div *ngIf="!part1Hidden" class="theme-list">
+    <mat-radio-group [(ngModel)]="selectedTheme" (change)="onThemeChange()" class="theme-radio-group">
+      <mat-card *ngFor="let template of templates" class="theme-card" [class.selected]="selectedTheme === template.templateId" (click)="selectTheme(template.templateId)">
+        <div class="theme-name">{{ template.templatename }}</div>
+        <mat-radio-button [value]="template.templateId" class="theme-radio"></mat-radio-button>
+      </mat-card>
+    </mat-radio-group>
   </div>
 </div>
