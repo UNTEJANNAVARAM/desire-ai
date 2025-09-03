@@ -25,7 +25,7 @@ export class SelectAssetsComponent implements OnInit {
   @Input() assets: Asset[] = [];
   @Input() automatedIds: string[] = [];
   @Input() selectedAssetIds: string[] = [];
-
+   @Input() readonly = false;
   @Output() selectionChange = new EventEmitter<string[]>();
   @Output() automateChanged = new EventEmitter<string[]>();
   @Output() editAsset = new EventEmitter<Asset>();

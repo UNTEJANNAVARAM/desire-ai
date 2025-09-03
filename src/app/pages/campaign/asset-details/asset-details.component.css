@@ -7,3 +7,310 @@ mat-card {
 h2 {
   margin-bottom: 16px;
 }
+
+/* overall container area inside each mat-tab */
+.tab-content {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 100px); /* leave room for headers & save bar */
+  overflow: hidden; /* inner sections scroll separately */
+  padding: 8px 16px;
+  box-sizing: border-box;
+}
+
+/* ========== Separate scroll areas ========== */
+.text-fields-scroll {
+  flex: 1 1 40%;
+  overflow-y: auto;
+  padding-right: 8px; /* space for scrollbar */
+  margin-bottom: 8px;
+}
+
+.product-controls-scroll {
+  flex: 1 1 60%;
+  overflow-y: auto;
+  padding-right: 8px;
+  border-top: 1px solid #eee;
+  padding-top: 12px;
+}
+
+/* Webkit scrollbar styling for both scroll containers */
+.text-fields-scroll::-webkit-scrollbar,
+.product-controls-scroll::-webkit-scrollbar {
+  width: 10px;
+}
+.text-fields-scroll::-webkit-scrollbar-track,
+.product-controls-scroll::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 10px;
+}
+.text-fields-scroll::-webkit-scrollbar-thumb,
+.product-controls-scroll::-webkit-scrollbar-thumb {
+  background: #febd93;
+  border-radius: 10px;
+}
+.text-fields-scroll::-webkit-scrollbar-thumb:hover,
+.product-controls-scroll::-webkit-scrollbar-thumb:hover {
+  background: #ffa97a;
+}
+
+/* Firefox scrollbar */
+.text-fields-scroll,
+.product-controls-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #febd93 #f0f0f0;
+}
+
+/* ========== Form fields & action buttons ========== */
+.full-width {
+  width: 100%;
+  margin-bottom: 6px;
+}
+.field-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+/* ========== Product tabs header styling ========== */
+.product-tabs .mat-tab-header {
+  background: #fff7f2; /* light orange header */
+  border-radius: 8px;
+  padding: 4px;
+  margin-bottom: 8px;
+}
+
+/* hide material arrow pagination if present */
+::ng-deep .mat-tab-header-pagination {
+  display: none !important;
+}
+::ng-deep .mat-tab-label-container {
+  overflow: visible !important;
+}
+
+/* ensure tab labels look like desire-ai */
+::ng-deep .mat-mdc-tab .mdc-tab__text-label {
+  color: #000 !important;
+}
+::ng-deep .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+  color: #ff6b35 !important;
+}
+::ng-deep .mat-mdc-tab-header .mdc-tab-indicator__content--underline {
+  background-color: #ff6b35 !important;
+}
+
+/* ========== Product tab content layout ========== */
+.product-tab-content {
+  padding: 6px 0;
+}
+
+/* Upload buttons */
+.upload-btn,
+.upload-logo-btn {
+  border: 2px dashed #ff6b35;
+  color: #ff6b35;
+  width: 100%;
+  text-transform: none;
+  margin-bottom: 12px;
+}
+.upload-btn mat-icon,
+.upload-logo-btn mat-icon {
+  margin-right: 8px;
+}
+.upload-btn:hover,
+.upload-logo-btn:hover {
+  background: rgba(255,107,53,0.06);
+}
+
+/* Image preview */
+.image-preview-container {
+  position: relative;
+  background: #fafafa;
+  border-radius: 8px;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+.placeholder-img,
+.placeholder-background {
+  color: #aaa;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+  width: 100%;
+}
+.product-preview-img,
+.background-preview-img {
+  max-width: 100%;
+  max-height: 120px;
+  object-fit: contain;
+}
+
+/* overlay edit/delete */
+.image-overlay {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+.image-preview-container:hover .image-overlay {
+  opacity: 1;
+}
+
+/* instruction box */
+.instruction-box {
+  background: #fff3e0;
+  border-left: 4px solid #ff6b35;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+.try-text { color: #ff6b35; }
+.done-text { color: #4caf50; }
+
+/* slider + play button */
+.slider-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.slider-action-btn {
+  background: #ff6b35;
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+.slider-action-btn:hover { background: #e55a2b; }
+
+/* logos grid */
+.logos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.logo-container {
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 6px;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.logo-img { max-width: 100%; max-height: 50px; object-fit: contain; }
+.logo-overlay { position: absolute; top: 6px; right: 6px; opacity: 0; transition: 0.15s; }
+.logo-container:hover .logo-overlay { opacity: 1; }
+
+/* logos actions */
+.logos-actions { display:flex; justify-content:flex-end; gap:8px; }
+
+/* ========== Shared AI prompt box ========== */
+.ai-prompt-box {
+  display: flex;
+  gap: 8px;
+  align-items: start;
+  margin-top: 12px;
+  background: #fff7f2;
+  padding: 8px;
+  border-radius: 6px;
+}
+.ai-textarea {
+  flex: 1;
+  border: none;
+  outline: none;
+  resize: vertical;
+  padding: 8px;
+  background: transparent;
+  font-size: 13px;
+}
+.ai-generate-btn {
+  background: #ff6b35;
+  color: #fff;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+}
+.ai-generate-btn:hover { background: #e55a2b; }
+
+/* ========== Save bar ========== */
+.save-bar {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  border-top: 1px solid #ddd;
+  padding: 10px 16px;
+  text-align: right;
+  z-index: 20;
+}
+.save-btn {
+  background: #ff6b35;
+  color: #fff;
+  padding: 8px 20px;
+  font-weight: 500;
+}
+.save-btn:hover { background: #e55a2b; }
+
+/* responsive tweaks */
+@media (max-width: 720px) {
+  .tab-content { padding: 8px; }
+  .image-preview-container { min-height: 100px; }
+}
+/* ----- Form-field label states (Secondary text, Hero copy, CTA, etc.) ----- */
+/* Default (not focused) -> BLACK */
+::ng-deep .tab-content .mat-mdc-form-field .mdc-floating-label {
+  color: #000 !important;
+}
+
+/* Focused/active (clicked or has value) -> ORANGE */
+::ng-deep .tab-content .mat-mdc-form-field.mat-focused .mdc-floating-label,
+::ng-deep .tab-content .mat-mdc-form-field.mat-form-field-should-float .mdc-floating-label {
+  color: #ff6b35 !important;
+}
+
+/* Keep typed text black */
+::ng-deep .tab-content .mat-mdc-input-element {
+  color: #000 !important;
+}
+/* Outline border colors: grey by default, orange when focused */
+::ng-deep .tab-content .mat-mdc-form-field .mdc-notched-outline__leading,
+::ng-deep .tab-content .mat-mdc-form-field .mdc-notched-outline__notch,
+::ng-deep .tab-content .mat-mdc-form-field .mdc-notched-outline__trailing {
+  border-color: #e0e0e0 !important;
+}
+
+::ng-deep .tab-content .mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+::ng-deep .tab-content .mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+::ng-deep .tab-content .mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+  border-color: #ff6b35 !important;
+}
+/* Ensure the left/right panes scroll */
+.tab-content {
+  padding: 16px;
+  max-height: calc(100vh - 100px); /* adjust if your save bar height differs */
+  overflow-y: auto;
+}
+/* WebKit scrollbar (Chrome/Edge) */
+.tab-content::-webkit-scrollbar {
+  width: 10px;
+}
+.tab-content::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 10px;
+}
+.tab-content::-webkit-scrollbar-thumb {
+  background: #febd93;          /* peach/orange like your sample */
+  border-radius: 10px;
+}
+.tab-content::-webkit-scrollbar-thumb:hover {
+  background: #ffa97a;
+}

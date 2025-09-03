@@ -1,17 +1,16 @@
 <div class="main-cta" id="main-cta-1">
-
-<button
-  class="cta-btn back"
-  [disabled]="backDisabled"
-  (click)="back.emit()">
-  Back
-</button>
-<button
-  class="cta-btn next"
-  [ngClass]="nextDisabled ? 'grey' : 'orange'"
-  [disabled]="nextDisabled"
-  (click)="next.emit()">
-  Next
-</button>
-
+  <button
+    *ngIf="!backDisabled" 
+    class="cta-btn back"
+    [disabled]="backDisabled"
+    (click)="back.emit()">
+    Back
+  </button>
+  <button
+    class="cta-btn next"
+    [ngClass]="nextDisabled ? 'grey' : 'orange'"
+    [disabled]="nextDisabled"
+    (click)="next.emit()">
+    Next 
+  </button>
 </div>

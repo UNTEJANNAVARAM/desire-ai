@@ -8,58 +8,86 @@
   align-items: center;
   padding-top: 16px;
   box-shadow: 1px 0 0 #dfdbd7;
+  font-family: 'Arial', sans-serif;
+  color: #392f2d;
 }
 
 .nav-top {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 38px;
+  margin-bottom: 16px; /* Decreased margin for compact look */
 }
 
+/* New Campaign pill button */
 .campaign-btn {
   background: #d76e3a;
-  border-radius: 50%;
+  border-radius: 24px;
   width: 48px;
-  height: 48px;
-  margin-bottom: 2px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+  transition: background 0.3s;
 }
 
-.plus-icon mat-icon {
+
+.campaign-btn:hover {
+  background: #bf5c29;
+}
+
+.campaign-btn mat-icon {
   color: #fff;
-  font-size: 26px;
+  font-size: 22px;
 }
 
+/* Label sits underneath, no bold, clean font */
 .campaign-label {
-  color: #393030;
+  color: #392f2d;
   font-size: 13px;
+  font-weight: 400;            /* No bold */
   text-align: center;
-  line-height: 1.1;
-  font-weight: 600;
+  line-height: 1.15;
+  margin-bottom: 0;
+  margin-top: 0;
+  user-select: none;
 }
 
+/* Dashboard */
 .nav-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 16px;
+  margin-top: 10px;   /* Less gap between campaign and dashboard */
 }
 
 .dash-btn {
-  background: transparent;
-  border-radius: 10px;
-  width: 32px;
-  height: 32px;
+  background: #edeceb;
+  border-radius: 24px;
+  width: 48px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-bottom: 2px;
 }
 
-.dash-btn mat-icon {
+.dashboard-icon {
   color: #392f2d;
   font-size: 22px;
+  transform: scaleX(-1); /* Flips icon horizontally */
+}
+.dash-btn mat-icon {
+  color: #392f2d;
+  font-size: 18px;
 }
 
 .dash-label {
   color: #392f2d;
   font-size: 13px;
-  margin-top: 3px;
+  font-weight: 400;           /* No bold */
   text-align: center;
+  margin-top: 0;
 }

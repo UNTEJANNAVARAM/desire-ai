@@ -14,6 +14,7 @@ import { Asset } from '../../../models/asset.model';
 })
 export class DataSourceComponent implements OnChanges {
   @Input() asset?: Asset;
+   @Input() readonly = false;
   @Output() validityChange = new EventEmitter<boolean>();
 
   displayedColumns = ['id', 'name', 'type', 'status'];

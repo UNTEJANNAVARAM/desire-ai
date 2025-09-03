@@ -1,7 +1,7 @@
-import { Component, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Output,Input, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-
+import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,13 +19,15 @@ import { MatButtonModule } from '@angular/material/button';
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
+    MatCardModule,
     MatButtonModule
   ]
 })
 export class CampaignDetailsComponent implements OnInit {
   @Output() validityChange = new EventEmitter<boolean>();
   @Output() fileSelected = new EventEmitter<Event>();
-
+  
+ @Input() readonly = false;
   campaignForm!: FormGroup;
 
   ngOnInit() {

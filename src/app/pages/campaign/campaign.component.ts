@@ -17,6 +17,7 @@ import { Vertical } from '../../models/vertical.model';
 import { Template } from '../../models/template.model';
 import { Asset } from '../../models/asset.model';
 
+import { MatIconModule } from '@angular/material/icon';   
 type Step = 'details' | 'theme' | 'assets' | 'automation' | 'asset-details' | 'data-source';
 
 @Component({
@@ -33,9 +34,11 @@ type Step = 'details' | 'theme' | 'assets' | 'automation' | 'asset-details' | 'd
     AssetDetailsComponent,
     DataSourceComponent,
     MainCtaComponent,
+    MatIconModule 
   ],
 })
 export class CampaignComponent {
+   
   step: Step = 'details';
 
   verticals: Vertical[] = [];
@@ -57,7 +60,7 @@ export class CampaignComponent {
   isDataSourceValid = false;
 
   bulkEditMode = false;
-
+  
   constructor(
     private verticalService: VerticalService,
     private templateService: TemplateService,
