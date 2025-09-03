@@ -1,11 +1,11 @@
 /* Container adjusted for header and left-nav sizes */
 .campaign-container {
   display: flex;
-  height: calc(100vh - 45px); /* assuming 45px header height */
+  height: 900px; /* per blue frame */
   margin-top: 45px;  /* Push below fixed header */
   margin-left: 66px; /* Push right of fixed left nav (66px) */
-  width: calc(100vw - 66px);
-  background: #f9f7f1;
+  width: 1440px; /* per blue frame width */
+  background: #F8F8F8; /* BG/50 */
   position: relative;
   box-sizing: border-box;
 }

@@ -1,24 +1,2 @@
-<div class="assets-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px;">
-  <div *ngFor="let asset of assets" class="asset-card" style="border: 1px solid #ddd; border-radius: 8px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
-
-    <div class="asset-name" style="font-weight: 600; font-size: 1.1rem;">{{ asset.assetname }}</div>
-    <div class="asset-desc" style="font-size: 0.9rem; color: #555;">{{ asset.description }}</div>
-
-    <mat-slide-toggle
-      [checked]="automatedIds.includes(asset.assetId)"
-      (change)="toggleAutomation(asset.assetId, $event)">
-      Automate
-    </mat-slide-toggle>
-
-    <mat-checkbox
-      [checked]="selectedAssetIds.includes(asset.assetId)"
-      (change)="toggleSelection(asset.assetId, $event)">
-      Select
-    </mat-checkbox>
-
-    <button mat-icon-button color="primary" aria-label="Edit Asset" (click)="editClicked(asset)">
-      <mat-icon>edit</mat-icon>
-    </button>
-
-  </div>
-</div>
+<!-- New Asset Selection Implementation -->
+<app-asset-list></app-asset-list>

@@ -32,13 +32,7 @@
     <div class="panel-content">
       <ng-container [ngSwitch]="step">
         <app-select-assets
-          *ngSwitchCase="'assets'"
-          [assets]="assets"
-          [automatedIds]="automatedParentIds"
-          [selectedAssetIds]="selectedAssetsIds"
-          (selectionChange)="onAssetsSelected($event)"
-          (editAsset)="onEditAsset($event)"
-          (automateChanged)="toggleAutomate($event)">
+          *ngSwitchCase="'assets'">
         </app-select-assets>
 
         <app-automation

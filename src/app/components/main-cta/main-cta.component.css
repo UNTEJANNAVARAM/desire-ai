@@ -2,9 +2,10 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 16px;
+  gap: 14px; /* per page-cta gap */
   width: 100%;
-  padding: 20px 40px;
+  padding: 8px 15px; /* per page-cta padding */
+  height: 56px; /* per page-cta height */
   background: #fff9f1;
   position: fixed;
   left: 66px;  /* adjust to your left nav width */

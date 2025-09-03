@@ -4,6 +4,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { Campaign, CampaignResponse } from '../models/campaign.model';
 import { TemplateCard } from '../components/template-card/template-card.component';
 import { VerticalOption } from '../components/vertical-selector/vertical-selector.component';
+import { AssetItem } from './asset-selection.service';
 
 export interface CampaignSelection {
   verticalId: string;
@@ -16,6 +17,10 @@ export interface CampaignSelection {
 export class CampaignService {
   private selectedTemplateSubject = new BehaviorSubject<CampaignSelection | null>(null);
   public selectedTemplate$ = this.selectedTemplateSubject.asObservable();
+
+  // Persist selected assets across steps
+  private selectedAssetsSubject = new BehaviorSubject<AssetItem[]>([]);
+  public selectedAssets$ = this.selectedAssetsSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
@@ -46,5 +51,18 @@ export class CampaignService {
   // Clear selection
   clearSelection(): void {
     this.selectedTemplateSubject.next(null);
+  }
+
+  // Asset selection management
+  setSelectedAssets(assets: AssetItem[]): void {
+    this.selectedAssetsSubject.next([...assets]);
+  }
+
+  getSelectedAssets(): AssetItem[] {
+    return this.selectedAssetsSubject.value;
+  }
+
+  clearSelectedAssets(): void {
+    this.selectedAssetsSubject.next([]);
   }
 }

@@ -12,6 +12,7 @@ import { MainCtaComponent } from '../../components/main-cta/main-cta.component';
 import { VerticalService } from '../../services/vertical.service';
 import { TemplateService } from '../../services/template.service';
 import { AssetService } from '../../services/asset.service';
+import { CampaignService } from '../../services/campaign.service';
 
 import { VerticalOption } from '../../components/vertical-selector/vertical-selector.component';
 import { TemplateCard } from '../../components/template-card/template-card.component';
@@ -63,6 +64,7 @@ export class CampaignComponent {
     private verticalService: VerticalService,
     private templateService: TemplateService,
     private assetService: AssetService,
+    private campaignService: CampaignService,
   ) {}
 
   ngOnInit() {
@@ -168,12 +170,8 @@ decreaseChildCount(event: any) {
 canGoNext(): boolean {
   switch (this.step) {
     case 'assets':
-      const numSelectedAssets = this.selectedAssetsIds.length;
-      const isAutomationOn = this.automatedAssets.length > 0;
-
-      if (numSelectedAssets === 1 && !isAutomationOn) return true; // Single asset edit
-      if (numSelectedAssets > 1 && isAutomationOn) return true; // Automation step allowed
-      return false;
+      const numSelectedAssets = this.campaignService.getSelectedAssets().length;
+      return numSelectedAssets > 0;
 
     // other cases remain unchanged:
     case 'details': return this.isDetailsValid;
@@ -197,16 +195,14 @@ onNext() {
       this.loadAssets();
       break;
     case 'assets':
-      const singleAssetSelected = this.selectedAssetsIds.length === 1;
-      const isAutomationOn = this.automatedAssets.length > 0;
-
-      if (singleAssetSelected && !isAutomationOn) {
-        // Open asset details with the selected asset
-        const assetId = this.selectedAssetsIds[0];
-        const asset = this.assets.find(a => a.assetId === assetId);
+      const selected = this.campaignService.getSelectedAssets();
+      if (selected.length === 1) {
+        const only = selected[0];
+        // Try to find actual Asset by name match fallback
+        const asset = this.assets.find(a => a.assetname === only.name);
         if (asset) this.onEditAsset(asset);
         this.step = 'asset-details';
-      } else if (isAutomationOn) {
+      } else if (selected.length > 1) {
         this.step = 'automation';
       }
       break;
