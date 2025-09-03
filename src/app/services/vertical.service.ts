@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { Vertical } from '../models/vertical.model';
+import { VerticalOption } from '../components/vertical-selector/vertical-selector.component';
 import { VERTICALS } from '../data/vertical.data';
 
 @Injectable({ providedIn: 'root' })
 export class VerticalService {
-  getVerticals(): Observable<Vertical[]> {
+  getVerticals(): Observable<VerticalOption[]> {
     return of(VERTICALS);
   }
 }

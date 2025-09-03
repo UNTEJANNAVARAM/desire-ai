@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { CampaignDetailsComponent } from './campaign-details/campaign-details.component';
-import { SelectThemeComponent } from './select-theme/select-theme.component';
+import { SelectThemeNewComponent } from './select-theme-new/select-theme-new.component';
 import { SelectAssetsComponent } from './select-assets/select-assets.component';
 import { AutomationComponent } from './automation/automation.component';
 import { AssetDetailsComponent } from './asset-details/asset-details.component';
@@ -13,8 +13,8 @@ import { VerticalService } from '../../services/vertical.service';
 import { TemplateService } from '../../services/template.service';
 import { AssetService } from '../../services/asset.service';
 
-import { Vertical } from '../../models/vertical.model';
-import { Template } from '../../models/template.model';
+import { VerticalOption } from '../../components/vertical-selector/vertical-selector.component';
+import { TemplateCard } from '../../components/template-card/template-card.component';
 import { Asset } from '../../models/asset.model';
 
 type Step = 'details' | 'theme' | 'assets' | 'automation' | 'asset-details' | 'data-source';
@@ -27,7 +27,7 @@ type Step = 'details' | 'theme' | 'assets' | 'automation' | 'asset-details' | 'd
   imports: [
     CommonModule,
     CampaignDetailsComponent,
-    SelectThemeComponent,
+    SelectThemeNewComponent,
     SelectAssetsComponent,
     AutomationComponent,
     AssetDetailsComponent,
@@ -36,13 +36,14 @@ type Step = 'details' | 'theme' | 'assets' | 'automation' | 'asset-details' | 'd
   ],
 })
 export class CampaignComponent {
-  step: Step = 'details';
+  step: Step = 'theme';
 
-  verticals: Vertical[] = [];
-  templates: Template[] = [];
+  verticals: VerticalOption[] = [];
+  templates: TemplateCard[] = [];
   assets: Asset[] = [];
 
   selectedVertical = '';
+  selectedSubCategory = '';
   selectedTemplate = '';
   selectedAssetsIds: string[] = [];
   automatedAssets: { parentId: string; childCount: number }[] = [];
@@ -66,15 +67,18 @@ export class CampaignComponent {
 
   ngOnInit() {
     this.verticalService.getVerticals()
-      .subscribe((data: Vertical[]) => (this.verticals = data));
+      .subscribe((data: VerticalOption[]) => {
+        this.verticals = data;
+      });
   }
 
   onDetailsValidity(valid: boolean) {
     this.isDetailsValid = valid;
   }
 
-  onVerticalSelected(verticalId: string) {
-    this.selectedVertical = verticalId;
+  onVerticalSelected(data: {verticalId: string, subCategory?: string}) {
+    this.selectedVertical = data.verticalId;
+    this.selectedSubCategory = data.subCategory || '';
     this.selectedTemplate = '';
     this.isThemeValid = false;
     this.templates = [];
@@ -87,9 +91,11 @@ export class CampaignComponent {
     this.isDataSourceValid = false;
     this.selectedAssetForDetails = null;
 
-    if (verticalId) {
-      this.templateService.getTemplates(verticalId)
-        .subscribe((data: Template[]) => (this.templates = data));
+    if (data.verticalId) {
+      this.templateService.getTemplates(data.verticalId, data.subCategory)
+        .subscribe((data: TemplateCard[]) => {
+          this.templates = data;
+        });
     }
   }
 

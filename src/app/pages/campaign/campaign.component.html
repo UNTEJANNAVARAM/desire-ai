@@ -12,13 +12,13 @@
           *ngSwitchCase="'details'"
           (validityChange)="onDetailsValidity($event)">
         </app-campaign-details>
-        <app-select-theme
+        <app-select-theme-new
           *ngSwitchCase="'theme'"
           [verticals]="verticals"
           [templates]="templates"
           (verticalChange)="onVerticalSelected($event)"
           (templateChange)="onTemplateSelected($event)">
-        </app-select-theme>
+        </app-select-theme-new>
       </ng-container>
     </div>
   </section>

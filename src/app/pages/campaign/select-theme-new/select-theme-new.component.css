@@ -1,0 +1,23 @@
+.select-theme-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 24px;
+}
+
+.vertical-section {
+  flex-shrink: 0;
+}
+
+.template-section {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .select-theme-container {
+    gap: 16px;
+  }
+}
