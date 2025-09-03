@@ -75,12 +75,12 @@
   (validityChange)="onAssetDetailsValidity($event)">
 </app-asset-details>
 
-<app-data-source
+<!-- <app-data-source
   *ngIf="step === 'data-source' && selectedAssetForDetails"
   [asset]="selectedAssetForDetails!"
   [readonly]="step !== 'data-source'"
   (validityChange)="onDataSourceValidity($event)">
-</app-data-source>
+</app-data-source> -->
 
         <ng-container *ngIf="!selectedAssetForDetails">
           <div class="panel-help">
