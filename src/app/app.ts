@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { LeftNavComponent } from './components/left-nav/left-nav.component';
@@ -10,10 +11,11 @@ import { CampaignComponent } from './pages/campaign/campaign.component';
   styleUrls: ['./app.css'],
   standalone: true,
   imports: [
+    RouterModule,
     HeaderComponent,
     FooterComponent,
     LeftNavComponent,
-    CampaignComponent,
+    
   ],
 })
 export class AppComponent {

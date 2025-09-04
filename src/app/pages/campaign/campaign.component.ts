@@ -6,18 +6,19 @@ import { SelectThemeComponent } from './select-theme/select-theme.component';
 import { SelectAssetsComponent } from './select-assets/select-assets.component';
 import { AutomationComponent } from './automation/automation.component';
 import { AssetDetailsComponent } from './asset-details/asset-details.component';
-import { DataSourceComponent } from './data-source/data-source.component';
 import { MainCtaComponent } from '../../components/main-cta/main-cta.component';
 import { VerticalService } from '../../services/vertical.service';
 import { TemplateService } from '../../services/template.service';
-import { AssetService } from '../../services/asset.service';
-
+import { FigmaAssetData } from '../../models/figma.model'
 import { Vertical } from '../../models/vertical.model';
 import { Template } from '../../models/template.model';
 import { Asset } from '../../models/asset.model';
-
-import { MatIconModule } from '@angular/material/icon';   
+import {FigmaService } from '../../services/figma.service'; 
+import { MatIconModule } from '@angular/material/icon'; 
+import { AssetService } from '../../services/asset.service';
+import { ChangeDetectorRef } from '@angular/core';
 type Step = 'details' | 'theme' | 'assets' | 'automation' | 'asset-details' | 'data-source';
+
 @Component({
   selector: 'app-campaign',
   templateUrl: './campaign.component.html',
@@ -30,20 +31,18 @@ type Step = 'details' | 'theme' | 'assets' | 'automation' | 'asset-details' | 'd
     SelectAssetsComponent,
     AutomationComponent,
     AssetDetailsComponent,
-    DataSourceComponent,
     MainCtaComponent,
     MatIconModule,
-    HeaderComponent, 
-      AssetDetailsComponent,
+    HeaderComponent,
   ],
 })
 export class CampaignComponent {
-   
   step: Step = 'details';
 
   verticals: Vertical[] = [];
   templates: Template[] = [];
   assets: Asset[] = [];
+  figma: FigmaAssetData[]=[];
 
   selectedVertical = '';
   selectedTemplate = '';
@@ -51,6 +50,7 @@ export class CampaignComponent {
   automatedAssets: { parentId: string; childCount: number }[] = [];
 
   selectedAssetForDetails: Asset | null = null;
+  figmaData: FigmaAssetData | null = null;
 
   isDetailsValid = false;
   isThemeValid = false;
@@ -60,11 +60,13 @@ export class CampaignComponent {
   isDataSourceValid = false;
 
   bulkEditMode = false;
-  
+
   constructor(
     private verticalService: VerticalService,
     private templateService: TemplateService,
     private assetService: AssetService,
+    private figmaService: FigmaService,
+    private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -118,25 +120,23 @@ export class CampaignComponent {
     this.updateAutomationValidity();
   }
 
- increaseChildCount(event: any) {
-  const id = event as string;
-  const asset = this.automatedAssets.find(a => a.parentId === id);
-  if (asset && asset.childCount < 5) {
-    asset.childCount++;
-    this.updateAutomationValidity();
+  increaseChildCount(event: any) {
+    const id = event as string;
+    const asset = this.automatedAssets.find(a => a.parentId === id);
+    if (asset && asset.childCount < 5) {
+      asset.childCount++;
+      this.updateAutomationValidity();
+    }
   }
-}
 
-decreaseChildCount(event: any) {
-  const id = event as string;
-  const asset = this.automatedAssets.find(a => a.parentId === id);
-  if (asset && asset.childCount > 0) {
-    asset.childCount--;
-    this.updateAutomationValidity();
+  decreaseChildCount(event: any) {
+    const id = event as string;
+    const asset = this.automatedAssets.find(a => a.parentId === id);
+    if (asset && asset.childCount > 0) {
+      asset.childCount--;
+      this.updateAutomationValidity();
+    }
   }
-}
-
-
 
   updateAutomation() {
     this.updateAutomationValidity();
@@ -146,9 +146,24 @@ decreaseChildCount(event: any) {
     this.isAutomationValid = this.automatedAssets.some(a => a.childCount > 0);
   }
 
-  onAssetSelected(asset: Asset) {
-    this.selectedAssetForDetails = asset;
+onAssetSelected(asset: Asset) {
+  this.selectedAssetForDetails = asset;
+  if (asset.figmaId) {
+    this.figmaService.getFigmaData(asset.figmaId).subscribe(data => {
+      this.figmaData = data;
+      this.cd.detectChanges();
+    });
+  } else {
+    this.figmaData = null;
   }
+  this.step = 'asset-details';
+}
+
+
+
+
+
+
 
   onAssetDetailsValidity(valid: boolean) {
     this.isAssetDetailsValid = valid;
@@ -162,59 +177,55 @@ decreaseChildCount(event: any) {
     return this.step !== 'details';
   }
 
-canGoNext(): boolean {
-  switch (this.step) {
-    case 'assets':
-      const numSelectedAssets = this.selectedAssetsIds.length;
-      const isAutomationOn = this.automatedAssets.length > 0;
-
-      if (numSelectedAssets === 1 && !isAutomationOn) return true; // Single asset edit
-      if (numSelectedAssets > 1 && isAutomationOn) return true; // Automation step allowed
-      return false;
-
-    // other cases remain unchanged:
-    case 'details': return this.isDetailsValid;
-    case 'theme': return this.isThemeValid;
-    case 'automation': return this.isAutomationValid;
-    case 'asset-details': return this.isAssetDetailsValid;
-    case 'data-source': return this.isDataSourceValid;
-    default: return false;
+  canGoNext(): boolean {
+    switch (this.step) {
+      case 'assets':
+        const numSelectedAssets = this.selectedAssetsIds.length;
+        const isAutomationOn = this.automatedAssets.length > 0;
+        if (numSelectedAssets === 1 && !isAutomationOn) return true; // Single asset edit
+        if (numSelectedAssets > 1 && isAutomationOn) return true; // Automation step allowed
+        return false;
+      case 'details': return this.isDetailsValid;
+      case 'theme': return this.isThemeValid;
+      case 'automation': return this.isAutomationValid;
+      case 'asset-details': return this.isAssetDetailsValid;
+      case 'data-source': return this.isDataSourceValid;
+      default: return false;
+    }
   }
-}
 
-onNext() {
-  if (!this.canGoNext()) return;
+  onNext() {
+    if (!this.canGoNext()) return;
 
-  switch (this.step) {
-    case 'details':
-      this.step = 'theme';
-      break;
-    case 'theme':
-      this.step = 'assets';
-      this.loadAssets();
-      break;
-    case 'assets':
-      const singleAssetSelected = this.selectedAssetsIds.length === 1;
-      const isAutomationOn = this.automatedAssets.length > 0;
+    switch (this.step) {
+      case 'details':
+        this.step = 'theme';
+        break;
+      case 'theme':
+        this.step = 'assets';
+        this.loadAssets();
+        break;
+      case 'assets':
+        const singleAssetSelected = this.selectedAssetsIds.length === 1;
+        const isAutomationOn = this.automatedAssets.length > 0;
 
-      if (singleAssetSelected && !isAutomationOn) {
-        // Open asset details with the selected asset
-        const assetId = this.selectedAssetsIds[0];
-        const asset = this.assets.find(a => a.assetId === assetId);
-        if (asset) this.onEditAsset(asset);
-        this.step = 'asset-details';
-      } else if (isAutomationOn) {
-        this.step = 'automation';
-      }
-      break;
-    case 'automation':
-      if (this.selectedAssetForDetails) this.step = 'asset-details';
-      break;
-    case 'asset-details':
-      this.step = 'data-source';
-      break;
+        if (singleAssetSelected && !isAutomationOn) {
+          const assetId = this.selectedAssetsIds[0];
+          const asset = this.assets.find(a => a.assetId === assetId);
+          if (asset) this.onEditAsset(asset);
+          this.step = 'asset-details';
+        } else if (isAutomationOn) {
+          this.step = 'automation';
+        }
+        break;
+      case 'automation':
+        if (this.selectedAssetForDetails) this.step = 'asset-details';
+        break;
+      case 'asset-details':
+        this.step = 'data-source';
+        break;
+    }
   }
-}
 
   onBack() {
     switch (this.step) {
@@ -266,17 +277,16 @@ onNext() {
     const found = this.assets.find(a => a.assetId === id);
     return found ? found.assetname : '';
   }
-  get numericStep(): number {
-  switch (this.step) {
-    case 'details': return 0;
-    case 'theme': return 0.5;
-    case 'assets': return 1;
-    case 'automation': return 1.5;
-    case 'asset-details': return 2;
-    case 'data-source': return 2.5;
-    // Add more as needed
-    default: return 1;
-  }
-}
 
+  get numericStep(): number {
+    switch (this.step) {
+      case 'details': return 0;
+      case 'theme': return 0.5;
+      case 'assets': return 1;
+      case 'automation': return 1.5;
+      case 'asset-details': return 2;
+      case 'data-source': return 2.5;
+      default: return 1;
+    }
+  }
 }

@@ -1,7 +1,6 @@
 <app-header [activeStep]="numericStep"></app-header>
 
 
-
 <div class="campaign-wrapper">
   <div class="campaign-container">
 
@@ -46,7 +45,7 @@
           [automatedIds]="automatedParentIds"
           [selectedAssetIds]="selectedAssetsIds"
           (selectionChange)="onAssetsSelected($event)"
-          (editAsset)="onEditAsset($event)"
+          (editAsset)="onAssetSelected($event)"
           (automateChanged)="toggleAutomate($event)">
         </app-select-assets>
 
@@ -70,10 +69,13 @@
 
       <div class="panel-content panel-scroll">
         <app-asset-details
-  *ngIf="step === 'asset-details' && selectedAssetForDetails"
-  [asset]="selectedAssetForDetails!"
+  *ngIf="selectedAssetForDetails"
+  [asset]="selectedAssetForDetails"
+  [figmaData]="figmaData"
   (validityChange)="onAssetDetailsValidity($event)">
 </app-asset-details>
+
+
 
 <!-- <app-data-source
   *ngIf="step === 'data-source' && selectedAssetForDetails"

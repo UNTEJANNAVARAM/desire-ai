@@ -59,6 +59,8 @@ export class SelectAssetsComponent implements OnInit {
   }
 
   editClicked(asset: Asset) {
-    this.editAsset.emit(asset);
-  }
+  console.log('Edit clicked for asset:', asset);
+  this.editAsset.emit(asset);
+}
+
 }
